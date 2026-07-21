@@ -1,0 +1,50 @@
+[21-Jul-2026 05:31:27 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'uifodiej_inikah2.petugas_akad' doesn't exist in /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php:89
+Stack trace:
+#0 /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php(89): PDO->query()
+#1 {main}
+  thrown in /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php on line 89
+[21-Jul-2026 05:32:41 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'uifodiej_inikah2.petugas_akad' doesn't exist in /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php:142
+Stack trace:
+#0 /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php(142): PDO->prepare()
+#1 {main}
+  thrown in /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php on line 142
+[21-Jul-2026 05:32:46 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'uifodiej_inikah2.petugas_akad' doesn't exist in /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php:142
+Stack trace:
+#0 /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php(142): PDO->prepare()
+#1 {main}
+  thrown in /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php on line 142
+[21-Jul-2026 05:32:47 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'uifodiej_inikah2.petugas_akad' doesn't exist in /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php:142
+Stack trace:
+#0 /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php(142): PDO->prepare()
+#1 {main}
+  thrown in /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php on line 142
+[21-Jul-2026 05:32:48 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'uifodiej_inikah2.petugas_akad' doesn't exist in /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php:142
+Stack trace:
+#0 /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php(142): PDO->prepare()
+#1 {main}
+  thrown in /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php on line 142
+[21-Jul-2026 05:32:51 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'uifodiej_inikah2.petugas_akad' doesn't exist in /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php:142
+Stack trace:
+#0 /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php(142): PDO->prepare()
+#1 {main}
+  thrown in /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php on line 142
+[21-Jul-2026 05:32:52 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'uifodiej_inikah2.petugas_akad' doesn't exist in /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php:142
+Stack trace:
+#0 /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php(142): PDO->prepare()
+#1 {main}
+  thrown in /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php on line 142
+[21-Jul-2026 05:33:29 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'uifodiej_inikah2.petugas_akad' doesn't exist in /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php:89
+Stack trace:
+#0 /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php(89): PDO->query()
+#1 {main}
+  thrown in /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php on line 89
+[21-Jul-2026 05:33:33 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'uifodiej_inikah2.petugas_akad' doesn't exist in /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php:89
+Stack trace:
+#0 /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php(89): PDO->query()
+#1 {main}
+  thrown in /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php on line 89
+[21-Jul-2026 05:33:37 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'uifodiej_inikah2.petugas_akad' doesn't exist in /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php:89
+Stack trace:
+#0 /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php(89): PDO->query()
+#1 {main}
+  thrown in /home/uifodiej/inikahkarangdadap.my.id/api/jadwal-api.php on line 89
