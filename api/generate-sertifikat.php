@@ -1,46 +1,16 @@
 <?php
 /**
  * API Generate Sertifikat PNG - iNikah (PHP GD Version)
- * Generate sertifikat sebagai gambar PNG dengan teks overlay langsung di atas template
- * Posisi teks menggunakan koordinat pixel — presisi dan konsisten di semua device
- * 
  * POST body: { nama, skor, nik }
- * 
  * Template: uploads/sertifikat/template.png (1280x720)
  */
 
-// DEBUG MODE
-if (isset($_GET['debug'])) {
-    require_once __DIR__ . '/config.php';
-    header('Content-Type: application/json');
-    $templatePath = __DIR__ . '/../uploads/sertifikat/template.png';
-    $outputDir = __DIR__ . '/../uploads/sertifikat/';
-    $fontPath = __DIR__ . '/fonts/Inter_28pt-Bold.ttf';
-    echo json_encode([
-        'template_exists' => file_exists($templatePath),
-        'template_size' => file_exists($templatePath) ? getimagesize($templatePath) : null,
-        'output_dir_exists' => is_dir($outputDir),
-        'output_dir_writable' => is_writable($outputDir),
-        'font_exists' => file_exists($fontPath),
-        'gd_enabled' => extension_loaded('gd'),
-        'php_version' => phpversion()
-    ]);
-    exit;
-}
-
-// TEST MODE
-if (isset($_GET['test'])) {
-    require_once __DIR__ . '/config.php';
-    $nama = 'SITI AMINAH';
-    $skor = 95;
-    $nik = '3326056677889900';
-    goto GENERATE;
-}
-
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/auth.php';
 
 header('Content-Type: application/json');
 
+// Generate sertifikat hanya boleh dilakukan dari posttest submit (POST only)
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['error' => 'Method harus POST']);
     exit;
@@ -51,8 +21,6 @@ $input = json_decode(file_get_contents('php://input'), true);
 $nama = strtoupper(trim($input['nama'] ?? ''));
 $skor = intval($input['skor'] ?? 0);
 $nik  = trim($input['nik'] ?? '');
-
-GENERATE:
 
 if (!$nama) {
     echo json_encode(['error' => 'Nama wajib diisi']);

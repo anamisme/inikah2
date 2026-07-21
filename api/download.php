@@ -13,16 +13,33 @@ if (!$file || strpos($file, '..') !== false || !preg_match('/^uploads\//', $file
     exit;
 }
 
-$fullPath = __DIR__ . '/../' . $file;
+// Normalisasi path dan cek apakah resolved path masih di dalam project
+$fullPath = realpath(__DIR__ . '/../' . $file);
+$projectRoot = realpath(__DIR__ . '/..');
 
-if (!file_exists($fullPath)) {
+if (!$fullPath || strpos($fullPath, $projectRoot) !== 0) {
+    http_response_code(403);
+    echo 'Access denied';
+    exit;
+}
+
+if (!file_exists($fullPath) || is_dir($fullPath)) {
     http_response_code(404);
     echo 'File not found';
     exit;
 }
 
+// Hanya izinkan file tertentu
+$allowedExtensions = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'pdf'];
+$ext = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
+if (!in_array($ext, $allowedExtensions)) {
+    http_response_code(403);
+    echo 'File type not allowed';
+    exit;
+}
+
 $filename = basename($fullPath);
-$mime = mime_content_type($fullPath);
+$mime = mime_content_type($fullPath) ?: 'application/octet-stream';
 
 header('Content-Type: ' . $mime);
 header('Content-Disposition: attachment; filename="' . $filename . '"');

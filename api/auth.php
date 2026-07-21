@@ -12,8 +12,12 @@ require_once __DIR__ . '/config.php';
 // ─── HELPER FUNCTIONS ─────────────────────────────
 
 function getSecretKey() {
-    // Diambil dari config.php (didefinisikan di server, tidak masuk ke git)
-    return defined('INIKAH_SECRET') ? INIKAH_SECRET : 'inikah-secret-key-2024';
+    if (!defined('INIKAH_SECRET') || INIKAH_SECRET === 'GANTI_DENGAN_STRING_ACAK_PANJANG_64_KARAKTER' || strlen(INIKAH_SECRET) < 32) {
+        http_response_code(500);
+        echo json_encode(['error' => 'INIKAH_SECRET belum dikonfigurasi. Buat config.php dari config.example.php.']);
+        exit;
+    }
+    return INIKAH_SECRET;
 }
 
 function generateToken($role) {

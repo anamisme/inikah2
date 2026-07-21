@@ -373,7 +373,7 @@ function prosesCariSertifikat() {
                     const safeNama = document.createElement('span');
                     safeNama.textContent = item.nama || '';
                     const safeLink = (item.link || '').replace(/[^a-zA-Z0-9\-._~:/?#\[\]@!$&'()*+,;=%]/g, '');
-                    const fullLink = safeLink.startsWith('http') ? safeLink : 'https://inikah.yayasanbaitulhikmah.com/' + safeLink;
+                    const fullLink = safeLink.startsWith('http') ? safeLink : safeLink;
                     const downloadLink = safeLink.startsWith('http') ? fullLink : 'api/download.php?file=' + encodeURIComponent(safeLink);
                     html += '<a href="' + downloadLink + '" target="_blank" rel="noopener noreferrer" class="ios-list-item"><div class="ios-list-left"><div class="ios-list-badge">E-CERT</div><div class="ios-list-title-box"><span class="ios-list-main-title" style="text-transform:uppercase;">' + safeNama.innerHTML + '</span><span style="font-size:0.75rem;color:var(--muted);">Sertifikat Siap Diunduh</span></div></div><span class="material-icons-outlined" style="color:var(--green-mid);">file_download</span></a>';
                 });

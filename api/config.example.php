@@ -1,18 +1,20 @@
 <?php
 /**
  * Konfigurasi Database iNikah
- * Ganti nilai di bawah sesuai dengan database cPanel kamu
+ * Copy file ini ke config.php dan isi dengan kredensial yang benar.
+ * JANGAN commit config.php ke git.
  */
 
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'uifodiej_inikah2');      // sesuaikan dengan nama database
-define('DB_USER', 'uifodiej_inikah2');      // sesuaikan dengan user database
-define('DB_PASS', 'Baitulhikmah*1'); // ganti dengan password database
+define('DB_NAME', 'YOUR_DATABASE_NAME');
+define('DB_USER', 'YOUR_DATABASE_USER');
+define('DB_PASS', 'YOUR_DATABASE_PASSWORD');
 
-// ── Kredensial rahasia (JANGAN commit ke git) ──
-define('INIKAH_SECRET', 'GANTI_DENGAN_STRING_ACAK_PANJANG_64_KARAKTER');
-define('ADMIN_PASSWORD', 'kuakarangdadap2024');
-define('PETUGAS_PASSWORD', 'petugaskua2024');
+// Buat string acak 64 karakter untuk secret token
+// Generator: php -r "echo bin2hex(random_bytes(32));"
+define('INIKAH_SECRET', 'GENERATE_RANDOM_64_CHAR_STRING_HERE');
+define('ADMIN_PASSWORD', 'GANTI_PASSWORD_ADMIN');
+define('PETUGAS_PASSWORD', 'GANTI_PASSWORD_PETUGAS');
 
 // Koneksi PDO
 try {
@@ -32,7 +34,7 @@ try {
     exit;
 }
 
-// CORS headers (supaya frontend bisa akses API)
+// CORS headers
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, DELETE');
 header('Access-Control-Allow-Headers: Content-Type');
