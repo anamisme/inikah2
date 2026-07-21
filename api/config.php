@@ -9,7 +9,7 @@ define('DB_NAME', 'uifodiej_inikah2');
 define('DB_USER', 'uifodiej_inikah2');
 define('DB_PASS', 'Baitulhikmah*1');
 
-define('INIKAH_SECRET', 'GANTI_DENGAN_STRING_ACAK_PANJANG_64_KARAKTER');
+define('INIKAH_SECRET', 'a7f3b2e9c1d84f6a9b5e2d7c3f8a1b6e4d9c2f7a8b3e6d1c5f4a9b2e7d8c3f6a');
 define('ADMIN_PASSWORD', 'kuakarangdadap2024');
 define('PETUGAS_PASSWORD', 'petugaskua2024');
 
