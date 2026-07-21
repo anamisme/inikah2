@@ -1,9 +1,7 @@
 uploads/sertifikat/*
 uploads/petugas/*
 uploads/ebooks/*
-uploads/blangko/*
 !uploads/sertifikat/.gitkeep
 !uploads/petugas/.gitkeep
 !uploads/ebooks/.gitkeep
-!uploads/blangko/.gitkeep
 api/error_log
