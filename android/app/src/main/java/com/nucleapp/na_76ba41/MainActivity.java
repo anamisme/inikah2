@@ -1,4 +1,4 @@
-package com.kua.karangdadap.inikah;
+package com.nucleapp.na_76ba41;
 
 import android.content.Intent;
 import android.net.Uri;

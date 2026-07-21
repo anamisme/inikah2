@@ -1,4 +1,4 @@
-package com.kua.karangdadap.inikah;
+package com.nucleapp.na_76ba41;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.kua.karangdadap.inikah", appContext.getPackageName());
+        assertEquals("com.nucleapp.na_76ba41", appContext.getPackageName());
     }
 }

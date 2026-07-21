@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.kua.karangdadap.inikah"
+    namespace = "com.nucleapp.na_76ba41"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -11,7 +11,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.kua.karangdadap.inikah"
+        applicationId = "com.nucleapp.na_76ba41"
         minSdk = 24
         targetSdk = 36
         versionCode = 3
