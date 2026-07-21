@@ -1,20 +1,17 @@
 <?php
 /**
  * Konfigurasi Database iNikah
- * Copy file ini ke config.php dan isi dengan kredensial yang benar.
- * JANGAN commit config.php ke git.
+ * JANGAN commit file ini ke git.
  */
 
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'YOUR_DATABASE_NAME');
-define('DB_USER', 'YOUR_DATABASE_USER');
-define('DB_PASS', 'YOUR_DATABASE_PASSWORD');
+define('DB_NAME', 'uifodiej_inikah2');
+define('DB_USER', 'uifodiej_inikah2');
+define('DB_PASS', 'Baitulhikmah*1');
 
-// Buat string acak 64 karakter untuk secret token
-// Generator: php -r "echo bin2hex(random_bytes(32));"
-define('INIKAH_SECRET', 'GENERATE_RANDOM_64_CHAR_STRING_HERE');
-define('ADMIN_PASSWORD', 'GANTI_PASSWORD_ADMIN');
-define('PETUGAS_PASSWORD', 'GANTI_PASSWORD_PETUGAS');
+define('INIKAH_SECRET', 'GANTI_DENGAN_STRING_ACAK_PANJANG_64_KARAKTER');
+define('ADMIN_PASSWORD', 'kuakarangdadap2024');
+define('PETUGAS_PASSWORD', 'petugaskua2024');
 
 // Koneksi PDO
 try {
@@ -34,13 +31,11 @@ try {
     exit;
 }
 
-// CORS headers
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, DELETE');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Content-Type: application/json; charset=utf-8');
 
-// Helper: bersihkan input
 function clean($str) {
     return htmlspecialchars(trim($str), ENT_QUOTES, 'UTF-8');
 }
