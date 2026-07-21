@@ -1,7 +1,0 @@
-uploads/sertifikat/*
-uploads/petugas/*
-uploads/ebooks/*
-!uploads/sertifikat/.gitkeep
-!uploads/petugas/.gitkeep
-!uploads/ebooks/.gitkeep
-api/error_log
