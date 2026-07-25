@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Penerima Sertifikat – iNikah</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green-deep: #064e3b;
+            --green-mid: #0f766e;
+            --green-light: #14b8a6;
+            --bg: #f2f5f3;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: rgba(15, 118, 110, 0.08);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+            background: var(--bg); color: var(--text);
+            padding: 20px; min-height: 100vh;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header { text-align: center; padding: 24px 0 20px; }
+        .logo {
+            font-family: "Playfair Display", serif;
+            font-size: 1.8rem;
+        }
+        .logo .wi { font-style: italic; color: #b45309; }
+        .logo .wn { font-weight: 700; }
+        .sub { font-size: 0.75rem; color: var(--muted); margin-top: 4px; font-weight: 600; }
+
+        .table-card {
+            background: #fff; border-radius: 16px; padding: 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06); border: 1px solid var(--border);
+        }
+        .table-toolbar {
+            display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; align-items: center;
+        }
+        .search-input {
+            flex: 1; min-width: 200px; padding: 10px 14px; border-radius: 10px;
+            border: 1.5px solid var(--border); font-size: 0.85rem; outline: none;
+        }
+        .search-input:focus { border-color: var(--green-light); }
+        .btn-action {
+            padding: 9px 16px; border-radius: 10px; border: none;
+            font-size: 0.8rem; font-weight: 600; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 4px;
+        }
+        .btn-print {
+            background: #f0fdf4; color: var(--green-deep); border: 1px solid var(--border);
+        }
+        .btn-export {
+            background: linear-gradient(135deg, var(--green-deep), var(--green-mid));
+            color: #fff;
+        }
+        .btn-action:hover { opacity: 0.85; }
+
+        .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+        .data-table th {
+            background: var(--green-deep); color: #fff; padding: 11px 14px;
+            text-align: left; font-weight: 600; white-space: nowrap;
+        }
+        .data-table td {
+            padding: 10px 14px; border-bottom: 1px solid var(--border);
+        }
+        .data-table tr:nth-child(even) td { background: #f8faf9; }
+        .data-table tr:hover td { background: #ecfdf5; }
+        .data-table a { color: var(--green-mid); text-decoration: none; font-weight: 600; }
+        .data-table a:hover { text-decoration: underline; }
+
+        .loading-state {
+            text-align: center; padding: 40px; color: var(--muted); font-size: 0.85rem;
+        }
+        .error-state {
+            text-align: center; padding: 40px; color: #ef4444; font-size: 0.85rem;
+        }
+        .count-badge {
+            font-size: 0.75rem; color: var(--muted); margin-bottom: 12px; font-weight: 600;
+        }
+        .count-badge span { color: var(--green-deep); }
+
+        @media print {
+            body { padding: 0; background: #fff; }
+            .header, .table-toolbar, .footer-link { display: none !important; }
+            .table-card { box-shadow: none; border: none; padding: 0; border-radius: 0; }
+            .data-table th { background: #333 !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .data-table tr:nth-child(even) td { background: #f3f3f3 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .container { max-width: 100%; }
+            .print-title { display: block !important; font-size: 1rem; font-weight: 700; margin-bottom: 10px; }
+        }
+        .print-title { display: none; }
+
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+            .table-card { padding: 14px; border-radius: 12px; }
+            .btn-action { padding: 8px 12px; font-size: 0.78rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ERROR SCREEN -->
+    <div id="errorScreen" class="container" style="display:none;">
+        <div class="header">
+            <div class="logo"><span class="wi">i</span><span class="wn">Nikah</span></div>
+            <p class="sub">Daftar Penerima Sertifikat</p>
+        </div>
+        <div style="background:#fff;border-radius:20px;padding:30px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,0.06);border:1px solid var(--border);">
+            <p style="font-size:1.2rem;margin-bottom:8px;">🔒</p>
+            <p style="font-size:0.95rem;font-weight:700;margin-bottom:6px;" id="errorMessage">Akses ditolak</p>
+            <p style="font-size:0.8rem;color:var(--muted);" id="errorDetail">Token tidak valid atau sudah kedaluwarsa.</p>
+        </div>
+    </div>
+
+    <!-- MAIN PANEL -->
+    <div id="mainPanel" class="container" style="display:none;">
+        <div class="header">
+            <div class="logo"><span class="wi">i</span><span class="wn">Nikah</span></div>
+            <p class="sub">Daftar Penerima Sertifikat</p>
+        </div>
+
+        <div class="table-card">
+            <div class="print-title">Daftar Penerima Sertifikat – iNikah</div>
+
+            <div class="table-toolbar">
+                <input class="search-input" type="text" id="searchInput" placeholder="🔍 Cari nama penerima..." oninput="filterData()">
+                <button class="btn-action btn-print" onclick="window.print()">🖨️ Cetak</button>
+                <button class="btn-action btn-export" onclick="exportExcel()">📥 Export Excel</button>
+            </div>
+
+            <div class="count-badge" id="countBadge" style="display:none;">
+                Total: <span id="totalCount">0</span> penerima sertifikat
+            </div>
+
+            <div class="table-wrap">
+                <table class="data-table" id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Penerima</th>
+                            <th>Sertifikat</th>
+                            <th>Tanggal</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div class="loading-state" id="loadingState">
+                <span class="material-icons-outlined" style="font-size:32px;color:var(--green-mid);display:block;margin-bottom:8px;">hourglass_top</span>
+                Memuat data sertifikat...
+            </div>
+        </div>
+
+        <p class="footer-link" style="text-align:center;margin-top:24px;font-size:0.75rem;color:var(--muted);">
+            <a href="index.html" style="color:var(--green-mid);text-decoration:none;font-weight:600;">← Kembali ke Beranda</a>
+        </p>
+    </div>
+
+    <script>
+        let RAW_DATA = [];
+        const API_TOKEN = new URLSearchParams(window.location.search).get('token') || '';
+
+        // Escape HTML
+        function esc(text) {
+            const d = document.createElement('div');
+            d.textContent = text || '';
+            return d.innerHTML;
+        }
+
+        // Init
+        (function() {
+            if (!API_TOKEN) {
+                showError('Token tidak ditemukan', 'Silakan gunakan link yang benar untuk mengakses halaman ini.');
+                return;
+            }
+            loadData();
+        })();
+
+        function loadData() {
+            fetch('api/sertifikat-list.php?token=' + encodeURIComponent(API_TOKEN))
+                .then(function(r) {
+                    if (!r.ok) throw r;
+                    return r.json();
+                })
+                .then(function(data) {
+                    if (data.error) {
+                        showError('Akses ditolak', data.error);
+                        return;
+                    }
+                    RAW_DATA = data || [];
+                    renderTable(RAW_DATA);
+                })
+                .catch(function() {
+                    showError('Gagal memuat data', 'Token tidak valid atau koneksi bermasalah.');
+                });
+        }
+
+        function showError(msg, detail) {
+            document.getElementById('errorMessage').textContent = msg;
+            document.getElementById('errorDetail').textContent = detail || '';
+            document.getElementById('errorScreen').style.display = 'block';
+        }
+
+        function renderTable(data) {
+            var tbody = document.querySelector('#dataTable tbody');
+            var loading = document.getElementById('loadingState');
+            var badge = document.getElementById('countBadge');
+
+            loading.style.display = 'none';
+            badge.style.display = 'block';
+            document.getElementById('totalCount').textContent = data.length;
+
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:40px;">Belum ada data sertifikat.</td></tr>';
+                return;
+            }
+
+            var html = '';
+            data.forEach(function(item, i) {
+                var linkUrl = esc(item.link || '');
+                var fullUrl = linkUrl;
+                if (linkUrl && !linkUrl.startsWith('http')) {
+                    fullUrl = 'api/download.php?file=' + encodeURIComponent(linkUrl);
+                }
+                html += '<tr>';
+                html += '<td>' + (i + 1) + '</td>';
+                html += '<td style="font-weight:600;">' + esc(item.nama) + '</td>';
+                html += '<td><a href="' + fullUrl + '" target="_blank" rel="noopener">Lihat Sertifikat</a></td>';
+                html += '<td>' + esc(item.tanggal) + '</td>';
+                html += '</tr>';
+            });
+            tbody.innerHTML = html;
+        }
+
+        function filterData() {
+            var q = document.getElementById('searchInput').value.toLowerCase().trim();
+            if (!q) {
+                renderTable(RAW_DATA);
+                return;
+            }
+            var filtered = RAW_DATA.filter(function(item) {
+                return (item.nama || '').toLowerCase().indexOf(q) !== -1;
+            });
+            renderTable(filtered);
+        }
+
+        function exportExcel() {
+            var data = RAW_DATA;
+            if (!data || data.length === 0) {
+                alert('Belum ada data untuk diekspor.');
+                return;
+            }
+
+            var headers = ['No', 'Nama Penerima', 'Link Sertifikat', 'Tanggal'];
+            var html = '<table border="1"><thead>';
+            html += '<tr><th colspan="' + headers.length + '" style="font-size:14px;background:#064e3b;color:#fff;">Daftar Penerima Sertifikat – iNikah KUA Karangdadap</th></tr>';
+            html += '<tr>' + headers.map(function(h) {
+                return '<th style="background:#0f766e;color:#fff;">' + h + '</th>';
+            }).join('') + '</tr>';
+            html += '</thead><tbody>';
+
+            data.forEach(function(item, i) {
+                var linkUrl = item.link || '';
+                if (linkUrl && !linkUrl.startsWith('http')) {
+                    linkUrl = window.location.origin + '/api/download.php?file=' + encodeURIComponent(linkUrl);
+                }
+                html += '<tr>';
+                html += '<td>' + (i + 1) + '</td>';
+                html += '<td>' + esc(item.nama) + '</td>';
+                html += '<td>' + esc(linkUrl) + '</td>';
+                html += '<td>' + esc(item.tanggal) + '</td>';
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+
+            var fullDoc = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="UTF-8"></head><body>' + html + '</body></html>';
+            var blob = new Blob(['\uFEFF' + fullDoc], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'daftar_penerima_sertifikat.xls';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

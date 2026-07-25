@@ -143,6 +143,22 @@
             </a>
         </div>
 
+        <!-- MENU SERTIFIKAT LIST -->
+        <div style="background:#fff;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);border:1px solid var(--border);margin-top:12px;">
+            <div style="display:flex;align-items:center;gap:14px;">
+                <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#b45309,#92400e);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <span class="material-icons-outlined" style="color:#fff;font-size:22px;">badge</span>
+                </div>
+                <div style="flex:1;">
+                    <p style="font-size:0.95rem;font-weight:700;margin-bottom:2px;">🏆 Link Daftar Sertifikat</p>
+                    <p style="font-size:0.75rem;color:var(--muted);">Halaman khusus untuk lihat daftar penerima sertifikat</p>
+                </div>
+                <button onclick="copySertifikatLink()" id="btnCopyLink" style="padding:8px 14px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--green-deep);font-size:0.78rem;font-weight:600;cursor:pointer;white-space:nowrap;">📋 Salin Link</button>
+                <a id="btnOpenLink" href="#" target="_blank" style="padding:8px 14px;border-radius:10px;border:none;background:linear-gradient(135deg,#b45309,#92400e);color:#fff;font-size:0.78rem;font-weight:600;text-decoration:none;white-space:nowrap;">Buka</a>
+            </div>
+            <p id="copyStatus" style="font-size:0.7rem;color:var(--green-mid);margin-top:8px;display:none;font-weight:600;">Link berhasil disalin!</p>
+        </div>
+
         <p style="text-align:center;margin-top:20px;font-size:0.75rem;color:var(--muted);">
             <a href="index.html" style="color:var(--green-mid);text-decoration:none;font-weight:600;">← Kembali ke Beranda</a>
         </p>
@@ -422,6 +438,26 @@
             html += '</div>';
             html += '<p style="font-size:0.7rem;color:var(--muted);margin-top:12px;">Skor: 2 poin/soal · Total: 100 poin · Nilai minimal lulus: 70</p>';
             document.getElementById('kunciContainer').innerHTML = html;
+        }
+
+        // SERTIFIKAT LIST LINK
+        (function() {
+            var sToken = 'sertifikat_kua_karangdadap_2024';
+            var baseUrl = window.location.origin + window.location.pathname.replace(/admin\.html$/, '') + 'sertifikat-list.html?token=' + sToken;
+            document.getElementById('btnOpenLink').href = baseUrl;
+            document.getElementById('btnCopyLink').dataset.link = baseUrl;
+        })();
+
+        function copySertifikatLink() {
+            var link = document.getElementById('btnCopyLink').dataset.link;
+            if (!link) return;
+            navigator.clipboard.writeText(link).then(function() {
+                var status = document.getElementById('copyStatus');
+                status.style.display = 'block';
+                setTimeout(function() { status.style.display = 'none'; }, 2000);
+            }).catch(function() {
+                prompt('Salin link ini:', link);
+            });
         }
 
         // AUTO CONVERT & PREVIEW GOOGLE DRIVE LINK
