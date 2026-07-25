@@ -266,14 +266,10 @@
             var html = '';
             data.forEach(function(item, i) {
                 var linkUrl = esc(item.link || '');
-                var fullUrl = linkUrl;
-                if (linkUrl && !linkUrl.startsWith('http')) {
-                    fullUrl = 'api/download.php?file=' + encodeURIComponent(linkUrl);
-                }
                 html += '<tr>';
                 html += '<td>' + (i + 1) + '</td>';
                 html += '<td style="font-weight:600;">' + esc(item.nama) + '</td>';
-                html += '<td><a href="' + fullUrl + '" target="_blank" rel="noopener">Lihat Sertifikat</a></td>';
+                html += '<td><a href="' + linkUrl + '" target="_blank" rel="noopener">Lihat Sertifikat</a></td>';
                 html += '<td>' + esc(item.tanggal) + '</td>';
                 html += '</tr>';
             });
