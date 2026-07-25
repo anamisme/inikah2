@@ -21,10 +21,10 @@ if (!$token) {
     exit;
 }
 
-// Validasi token sederhana: harus sama dengan SERTIFIKAT_LIST_TOKEN di config
-$validToken = defined('SERTIFIKAT_LIST_TOKEN') ? SERTIFIKAT_LIST_TOKEN : '';
+// Validasi token: cek dari config.php, fallback ke hardcoded
+$validToken = defined('SERTIFIKAT_LIST_TOKEN') ? SERTIFIKAT_LIST_TOKEN : 'sertifikat_kua_karangdadap_2024';
 
-if (!$validToken || !hash_equals($validToken, $token)) {
+if (!hash_equals($validToken, $token)) {
     http_response_code(401);
     echo json_encode(['error' => 'Token tidak valid.']);
     exit;
