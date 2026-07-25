@@ -30,16 +30,27 @@ if (!hash_equals($validToken, $token)) {
     exit;
 }
 
-$stmt = $pdo->query("SELECT nama, link, tanggal FROM sertifikat ORDER BY tanggal DESC");
-$rows = $stmt->fetchAll();
+try {
+    $stmt = $pdo->query("SELECT nama, link, tanggal FROM sertifikat ORDER BY tanggal DESC");
+    $rows = $stmt->fetchAll();
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Gagal mengambil data: ' . $e->getMessage()]);
+    exit;
+}
 
-// Format tanggal jadi lebih rapi
 $result = [];
 foreach ($rows as $row) {
+    $tgl = $row['tanggal'];
+    if ($tgl && strtotime($tgl) !== false) {
+        $tgl = date('d M Y, H:i', strtotime($tgl));
+    } elseif (!$tgl) {
+        $tgl = '-';
+    }
     $result[] = [
-        'nama'     => $row['nama'],
-        'link'     => $row['link'],
-        'tanggal'  => date('d M Y, H:i', strtotime($row['tanggal']))
+        'nama'    => $row['nama'],
+        'link'    => $row['link'],
+        'tanggal' => $tgl
     ];
 }
 
