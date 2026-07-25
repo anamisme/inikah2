@@ -82,10 +82,27 @@
             font-size: 0.75rem; color: var(--muted); margin-bottom: 12px; font-weight: 600;
         }
         .count-badge span { color: var(--green-deep); }
+        .filter-row {
+            display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; align-items: center;
+        }
+        .filter-select {
+            padding: 9px 12px; border-radius: 10px; border: 1.5px solid var(--border);
+            font-size: 0.8rem; outline: none; background: #fff; color: var(--text);
+        }
+        .filter-select:focus { border-color: var(--green-light); }
+        .sort-btn {
+            padding: 9px 14px; border-radius: 10px; border: 1.5px solid var(--border);
+            background: #fff; font-size: 0.78rem; font-weight: 600; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 4px; color: var(--text);
+        }
+        .sort-btn.active {
+            background: var(--green-deep); color: #fff; border-color: var(--green-deep);
+        }
+        .sort-btn:hover { opacity: 0.85; }
 
         @media print {
             body { padding: 0; background: #fff; }
-            .header, .table-toolbar, .footer-link { display: none !important; }
+            .header, .table-toolbar, .filter-row, .footer-link { display: none !important; }
             .table-card { box-shadow: none; border: none; padding: 0; border-radius: 0; }
             .data-table th { background: #333 !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .data-table tr:nth-child(even) td { background: #f3f3f3 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -126,9 +143,32 @@
             <div class="print-title">Daftar Penerima Sertifikat – iNikah</div>
 
             <div class="table-toolbar">
-                <input class="search-input" type="text" id="searchInput" placeholder="🔍 Cari nama penerima..." oninput="filterData()">
+                <input class="search-input" type="text" id="searchInput" placeholder="🔍 Cari nama penerima..." oninput="applyFilters()">
                 <button class="btn-action btn-print" onclick="window.print()">🖨️ Cetak</button>
                 <button class="btn-action btn-export" onclick="exportExcel()">📥 Export Excel</button>
+            </div>
+
+            <div class="filter-row">
+                <select class="filter-select" id="filterMonth" onchange="applyFilters()">
+                    <option value="">Semua Bulan</option>
+                    <option value="01">Januari</option>
+                    <option value="02">Februari</option>
+                    <option value="03">Maret</option>
+                    <option value="04">April</option>
+                    <option value="05">Mei</option>
+                    <option value="06">Juni</option>
+                    <option value="07">Juli</option>
+                    <option value="08">Agustus</option>
+                    <option value="09">September</option>
+                    <option value="10">Oktober</option>
+                    <option value="11">November</option>
+                    <option value="12">Desember</option>
+                </select>
+                <select class="filter-select" id="filterYear" onchange="applyFilters()">
+                    <option value="">Semua Tahun</option>
+                </select>
+                <button class="sort-btn active" id="sortDesc" onclick="setSort('desc')">Terbaru ↓</button>
+                <button class="sort-btn" id="sortAsc" onclick="setSort('asc')">Terlama ↑</button>
             </div>
 
             <div class="count-badge" id="countBadge" style="display:none;">
@@ -162,7 +202,9 @@
 
     <script>
         let RAW_DATA = [];
+        let CURRENT_SORT = 'desc';
         const API_TOKEN = new URLSearchParams(window.location.search).get('token') || '';
+        const MONTH_NAMES = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 
         // Escape HTML
         function esc(text) {
@@ -192,7 +234,8 @@
                         return;
                     }
                     RAW_DATA = data || [];
-                    renderTable(RAW_DATA);
+                    populateYearFilter(RAW_DATA);
+                    applyFilters();
                 })
                 .catch(function() {
                     showError('Gagal memuat data', 'Token tidak valid atau koneksi bermasalah.');
@@ -237,20 +280,92 @@
             tbody.innerHTML = html;
         }
 
-        function filterData() {
-            var q = document.getElementById('searchInput').value.toLowerCase().trim();
-            if (!q) {
-                renderTable(RAW_DATA);
-                return;
-            }
-            var filtered = RAW_DATA.filter(function(item) {
-                return (item.nama || '').toLowerCase().indexOf(q) !== -1;
+        function populateYearFilter(data) {
+            var years = {};
+            data.forEach(function(item) {
+                var d = parseDate(item.tanggal);
+                if (d) years[d.getFullYear()] = true;
             });
+            var sel = document.getElementById('filterYear');
+            Object.keys(years).sort().reverse().forEach(function(y) {
+                var opt = document.createElement('option');
+                opt.value = y;
+                opt.textContent = y;
+                sel.appendChild(opt);
+            });
+        }
+
+        function parseDate(str) {
+            if (!str) return null;
+            var d = new Date(str);
+            if (!isNaN(d.getTime())) return d;
+            return null;
+        }
+
+        function getRawDate(item) {
+            return parseDate(item.tanggal);
+        }
+
+        function setSort(dir) {
+            CURRENT_SORT = dir;
+            document.getElementById('sortDesc').classList.toggle('active', dir === 'desc');
+            document.getElementById('sortAsc').classList.toggle('active', dir === 'asc');
+            applyFilters();
+        }
+
+        function applyFilters() {
+            var q = document.getElementById('searchInput').value.toLowerCase().trim();
+            var month = document.getElementById('filterMonth').value;
+            var year = document.getElementById('filterYear').value;
+
+            var filtered = RAW_DATA.filter(function(item) {
+                if (q && (item.nama || '').toLowerCase().indexOf(q) === -1) return false;
+                var d = getRawDate(item);
+                if (d) {
+                    if (month && String(d.getMonth() + 1).padStart(2, '0') !== month) return false;
+                    if (year && String(d.getFullYear()) !== year) return false;
+                } else if (month || year) {
+                    return false;
+                }
+                return true;
+            });
+
+            filtered.sort(function(a, b) {
+                var da = getRawDate(a);
+                var db = getRawDate(b);
+                var ta = da ? da.getTime() : 0;
+                var tb = db ? db.getTime() : 0;
+                return CURRENT_SORT === 'desc' ? tb - ta : ta - tb;
+            });
+
             renderTable(filtered);
         }
 
+        function getFilteredData() {
+            var q = document.getElementById('searchInput').value.toLowerCase().trim();
+            var month = document.getElementById('filterMonth').value;
+            var year = document.getElementById('filterYear').value;
+            return RAW_DATA.filter(function(item) {
+                if (q && (item.nama || '').toLowerCase().indexOf(q) === -1) return false;
+                var d = getRawDate(item);
+                if (d) {
+                    if (month && String(d.getMonth() + 1).padStart(2, '0') !== month) return false;
+                    if (year && String(d.getFullYear()) !== year) return false;
+                } else if (month || year) {
+                    return false;
+                }
+                return true;
+            }).sort(function(a, b) {
+                var da = getRawDate(a);
+                var db = getRawDate(b);
+                var ta = da ? da.getTime() : 0;
+                var tb = db ? db.getTime() : 0;
+                return CURRENT_SORT === 'desc' ? tb - ta : ta - tb;
+            });
+        }
+
         function exportExcel() {
-            var data = RAW_DATA;
+            var data = getFilteredData();
             if (!data || data.length === 0) {
                 alert('Belum ada data untuk diekspor.');
                 return;
