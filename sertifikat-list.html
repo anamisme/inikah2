@@ -206,6 +206,7 @@
         }
 
         function renderTable(data) {
+            document.getElementById('mainPanel').style.display = 'block';
             var tbody = document.querySelector('#dataTable tbody');
             var loading = document.getElementById('loadingState');
             var badge = document.getElementById('countBadge');
