@@ -104,6 +104,32 @@
         </div>
     </div>
 
+    <!-- MODAL DATA KEAGAMAAN -->
+    <div id="keagamaanModal" class="app-modal-overlay">
+        <div class="app-modal-content" style="height: auto; max-height: 85vh; max-height: 85dvh; overflow-y: auto;">
+            <button class="app-modal-close" onclick="tutupModalKeagamaan()" title="Tutup">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <h3 class="app-modal-title">Data Keagamaan</h3>
+            <div class="p-4" style="background: #f8fafc;">
+                <p class="text-muted small mb-3">Daftar masjid, musholla, dan TPQ di wilayah KUA Karangdadap.</p>
+
+                <div style="display:flex;gap:6px;margin-bottom:16px;" id="keagamaanTabs">
+                    <button onclick="loadKeagamaanPublik('masjid')" id="kTabMasjid" class="keagamaan-publik-tab active">Masjid</button>
+                    <button onclick="loadKeagamaanPublik('musholla')" id="kTabMusholla" class="keagamaan-publik-tab">Musholla</button>
+                    <button onclick="loadKeagamaanPublik('tpq')" id="kTabTpq" class="keagamaan-publik-tab">TPQ</button>
+                </div>
+
+                <div id="keagamaanPublikContent">
+                    <div class="text-center text-muted p-4">
+                        <div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>
+                        Memuat data...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- FLOATING MODAL PENCARIAN SERTIFIKAT -->
     <div id="searchModal" class="app-modal-overlay">
         <div class="app-modal-content" style="height: auto; max-height: 85vh; max-height: 85dvh; overflow-y: auto;">
@@ -305,6 +331,22 @@
                             <span class="material-icons-outlined" style="font-size:18px;color:#94a3b8;">lock</span>
                         </a>
                     </div>
+                </div>
+            </div>
+
+            <!-- CARD: DATA KEAGAMAAN -->
+            <div class="ios-main-card" onclick="event.stopPropagation(); bukaModalKeagamaan()" style="cursor:pointer;">
+                <div class="ios-card-header">
+                    <div class="ios-card-icon-title">
+                        <div class="ios-card-icon" style="background:linear-gradient(135deg,#b45309,#92400e);">
+                            <span class="material-icons-outlined" style="font-size:24px;">mosque</span>
+                        </div>
+                        <div>
+                            <h2 class="ios-card-title">Data Keagamaan</h2>
+                            <span class="ios-card-desc">Daftar masjid, musholla & TPQ</span>
+                        </div>
+                    </div>
+                    <span class="material-icons-outlined chevron-main">chevron_right</span>
                 </div>
             </div>
 

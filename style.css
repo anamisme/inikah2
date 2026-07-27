@@ -864,3 +864,33 @@ body.dark-mode .ios-input::placeholder {
 body.dark-mode .ios-list-main-title {
     color: #f1f5f9;
 }
+
+/* KEAGAMAAN TABS */
+.keagamaan-publik-tab {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    color: var(--text);
+    transition: all 0.2s;
+}
+.keagamaan-publik-tab.active {
+    background: var(--green-deep);
+    color: #fff;
+    border-color: var(--green-deep);
+}
+body.dark-mode .keagamaan-publik-tab {
+    background: #1e293b;
+    color: #e2e8f0;
+    border-color: #334155;
+}
+body.dark-mode .keagamaan-publik-tab.active {
+    background: var(--green-deep);
+    color: #fff;
+    border-color: var(--green-deep);
+}

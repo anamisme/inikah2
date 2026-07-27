@@ -529,4 +529,52 @@ function resetBannerInterval() {
 
 setTimeout(loadBanners, 1500);
 
+// ===== DATA KEAGAMAAN =====
+let keagamaanCurrentTab = 'masjid';
+
+window.bukaModalKeagamaan = function() {
+    document.getElementById('keagamaanModal').classList.add('active');
+    loadKeagamaanPublik('masjid');
+};
+
+window.tutupModalKeagamaan = function() {
+    document.getElementById('keagamaanModal').classList.remove('active');
+};
+
+window.loadKeagamaanPublik = function(tipe) {
+    keagamaanCurrentTab = tipe;
+    document.getElementById('kTabMasjid').classList.toggle('active', tipe === 'masjid');
+    document.getElementById('kTabMusholla').classList.toggle('active', tipe === 'musholla');
+    document.getElementById('kTabTpq').classList.toggle('active', tipe === 'tpq');
+
+    var container = document.getElementById('keagamaanPublikContent');
+    container.innerHTML = '<div class="text-center text-muted p-4"><div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>Memuat data...</div>';
+
+    fetch('api/keagamaan-api.php?action=get&tipe=' + encodeURIComponent(tipe))
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (!data || data.length === 0) {
+                container.innerHTML = '<div class="text-center text-muted p-3"><p style="font-size:0.85rem;">Belum ada data ' + tipe + '.</p></div>';
+                return;
+            }
+            var html = '';
+            data.forEach(function(item) {
+                html += '<div style="padding:12px 16px;border-radius:12px;background:#fff;margin-bottom:8px;border:1px solid rgba(15,118,110,0.08);">';
+                html += '<p style="font-weight:700;font-size:0.9rem;margin-bottom:2px;">' + escapeHtmlKeagamaan(item.nama) + '</p>';
+                html += '<p style="font-size:0.78rem;color:#64748b;">📍 ' + escapeHtmlKeagamaan(item.desa) + '</p>';
+                html += '</div>';
+            });
+            container.innerHTML = html;
+        })
+        .catch(function() {
+            container.innerHTML = '<div class="text-center text-muted p-3"><p style="font-size:0.85rem;color:#ef4444;">Gagal memuat data.</p></div>';
+        });
+};
+
+function escapeHtmlKeagamaan(text) {
+    var d = document.createElement('div');
+    d.textContent = text || '';
+    return d.innerHTML;
+}
+
 

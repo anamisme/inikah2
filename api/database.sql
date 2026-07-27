@@ -51,6 +51,17 @@ CREATE TABLE IF NOT EXISTS `jawaban_test` (
     `tanggal` DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE IF NOT EXISTS `data_keagamaan` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `tipe` ENUM('masjid', 'musholla', 'tpq') NOT NULL,
+    `nama` VARCHAR(255) NOT NULL,
+    `desa` VARCHAR(255) NOT NULL,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE INDEX idx_keagamaan_tipe ON `data_keagamaan` (`tipe`);
+CREATE INDEX idx_keagamaan_nama ON `data_keagamaan` (`nama`);
+
 -- Index untuk pencarian cepat
 CREATE INDEX idx_sertifikat_nama ON `sertifikat` (`nama`);
 CREATE INDEX idx_jawaban_nama ON `jawaban_test` (`nama`, `tipe`);
