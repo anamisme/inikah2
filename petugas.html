@@ -171,6 +171,10 @@
                 <input type="text" id="petugasWanita" required>
             </div>
             <div class="form-group">
+                <label>Alamat / Desa</label>
+                <input type="text" id="petugasDesa" placeholder="Contoh: Desa Karangdadap" required>
+            </div>
+            <div class="form-group">
                 <label>Foto</label>
                 <input type="file" id="petugasFoto" accept="image/*" required>
             </div>
@@ -361,6 +365,7 @@
             const waktu = document.getElementById('petugasWaktu').value.trim();
             const pria = document.getElementById('petugasPria').value.trim();
             const wanita = document.getElementById('petugasWanita').value.trim();
+            const desa = document.getElementById('petugasDesa').value.trim();
             const foto = document.getElementById('petugasFoto').files[0];
             const status = document.getElementById('petugasStatus');
             const btn = document.getElementById('btnPetugas');
@@ -381,6 +386,7 @@
             formData.append('waktu', waktu);
             formData.append('nama_pria', pria);
             formData.append('nama_wanita', wanita);
+            formData.append('desa', desa);
             formData.append('foto', foto);
 
             fetch(API_URL + '?action=addPetugas&token=' + encodeURIComponent(AUTH_TOKEN), {
@@ -397,6 +403,7 @@
                     document.getElementById('petugasWaktu').value = '';
                     document.getElementById('petugasPria').value = '';
                     document.getElementById('petugasWanita').value = '';
+                    document.getElementById('petugasDesa').value = '';
                     document.getElementById('petugasFoto').value = '';
                     loadPetugas();
                 } else {

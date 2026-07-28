@@ -530,6 +530,59 @@ function resetBannerInterval() {
 setTimeout(loadBanners, 1500);
 
 // ===== DATA KEAGAMAAN =====
+
+// ===== PONDASI SAKINAH =====
+window.bukaModalPondasi = function() {
+    var modal = document.getElementById('pondasiModal');
+    if (modal) {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+        loadPondasiData();
+    }
+};
+
+window.tutupModalPondasi = function() {
+    var modal = document.getElementById('pondasiModal');
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+};
+
+function loadPondasiData() {
+    var container = document.getElementById('pondasiContent');
+    container.innerHTML = '<div class="text-center text-muted p-4"><div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>Memuat data...</div>';
+
+    fetch('api/jadwal-api.php?action=getPetugas')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (!data || data.length === 0) {
+                container.innerHTML = '<div class="text-center p-4"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data calon pengantin.</p></div>';
+                return;
+            }
+            var html = '<div style="display:flex;flex-direction:column;gap:12px;">';
+            data.forEach(function(item) {
+                html += '<div style="background:#fff;border-radius:14px;padding:14px 16px;border:1px solid rgba(15,118,110,0.08);">';
+                if (item.foto) {
+                    html += '<img src="' + _esc(item.foto) + '" onclick="openFotoLightbox(this.src)" style="width:100%;max-height:220px;object-fit:cover;border-radius:10px;margin-bottom:12px;cursor:pointer;border:1px solid rgba(0,0,0,0.06);" alt="Foto Akad">';
+                }
+                html += '<p style="font-size:0.9rem;font-weight:700;margin-bottom:4px;">' + _esc(item.nama_pria) + ' & ' + _esc(item.nama_wanita) + '</p>';
+                if (item.desa) {
+                    html += '<p style="font-size:0.78rem;color:#64748b;">📍 ' + _esc(item.desa) + '</p>';
+                }
+                html += '<p style="font-size:0.78rem;color:#94a3b8;">📅 ' + _esc(item.tanggal) + ' · ⏰ ' + _esc(item.waktu || '') + '</p>';
+                html += '<p style="font-size:0.72rem;color:#94a3b8;">👤 Petugas: ' + _esc(item.nama_petugas) + '</p>';
+                html += '</div>';
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        })
+        .catch(function() {
+            container.innerHTML = '<div class="text-center text-muted p-3"><p style="font-size:0.85rem;color:#ef4444;">Gagal memuat data.</p></div>';
+        });
+}
+
+// ===== DATA KEAGAMAAN =====
 window.bukaModalKeagamaanTarget = function(modalId, tipe, contentId, tabsId) {
     var modal = document.getElementById(modalId);
     if (modal) {

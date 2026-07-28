@@ -98,6 +98,7 @@ switch ($action) {
         $waktu = clean($_POST['waktu'] ?? '');
         $pria = clean($_POST['nama_pria'] ?? '');
         $wanita = clean($_POST['nama_wanita'] ?? '');
+        $desa = clean($_POST['desa'] ?? '');
 
         if (!$nama_petugas || !$tanggal || !$waktu || !$pria || !$wanita) {
             http_response_code(400);
@@ -139,8 +140,8 @@ switch ($action) {
             }
         }
 
-        $stmt = $pdo->prepare("INSERT INTO petugas_akad (nama_petugas, tanggal, waktu, nama_pria, nama_wanita, foto) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$nama_petugas, $tanggal, $waktu, $pria, $wanita, $fotoPath]);
+        $stmt = $pdo->prepare("INSERT INTO petugas_akad (nama_petugas, tanggal, waktu, nama_pria, nama_wanita, desa, foto) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$nama_petugas, $tanggal, $waktu, $pria, $wanita, $desa, $fotoPath]);
         echo json_encode(['success' => true]);
         break;
 

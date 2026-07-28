@@ -104,6 +104,28 @@
         </div>
     </div>
 
+    <!-- MODAL PONDASI SAKINAH -->
+    <div id="pondasiModal" class="app-modal-overlay">
+        <div class="app-modal-content" style="height: auto; max-height: 85vh; max-height: 85dvh; overflow-y: auto;">
+            <button class="app-modal-close" onclick="tutupModalPondasi()" title="Tutup">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <h3 class="app-modal-title">
+                <span class="material-icons-outlined" style="font-size:22px;color:#e11d48;margin-right:6px;vertical-align:middle;">favorite</span>
+                Cek Pondasi Sakinah
+            </h3>
+            <div style="padding:16px;">
+                <p class="text-muted small mb-3">Data calon pengantin yang sudah terdaftar di KUA Karangdadap.</p>
+                <div id="pondasiContent">
+                    <div class="text-center text-muted p-4">
+                        <div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>
+                        Memuat data...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL DATA PERNIKAHAN -->
     <div id="nikahModal" class="app-modal-overlay">
         <div class="app-modal-content" style="height: auto; max-height: 85vh; max-height: 85dvh; overflow-y: auto;">
@@ -425,6 +447,19 @@
                             </div>
                             <span class="material-icons-outlined" style="font-size:18px;color:#94a3b8;">lock</span>
                         </a>
+
+                        <div onclick="event.stopPropagation(); bukaModalPondasi()" class="sub-list-item" style="cursor:pointer;">
+                            <div class="sub-list-left">
+                                <div class="sub-badge badge-icon">
+                                    <span class="material-icons-outlined" style="font-size:16px;">favorite</span>
+                                </div>
+                                <div class="sub-title-box">
+                                    <span class="sub-title">Cek Pondasi Sakinah</span>
+                                    <span class="sub-desc">Lihat data calon pengantin & bukti foto</span>
+                                </div>
+                            </div>
+                            <span class="material-icons-outlined" style="font-size:20px;color:#94a3b8;">chevron_right</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -579,7 +614,7 @@
 
     </div>
 
-    <script src="script.js?v=7"></script>
+    <script src="script.js?v=8"></script>
 </body>
 </html>
 

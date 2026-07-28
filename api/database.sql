@@ -51,6 +51,18 @@ CREATE TABLE IF NOT EXISTS `jawaban_test` (
     `tanggal` DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE IF NOT EXISTS `petugas_akad` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `nama_petugas` VARCHAR(255) NOT NULL,
+    `tanggal` DATE NOT NULL,
+    `waktu` VARCHAR(20) DEFAULT NULL,
+    `nama_pria` VARCHAR(255) NOT NULL,
+    `nama_wanita` VARCHAR(255) NOT NULL,
+    `desa` VARCHAR(255) DEFAULT NULL,
+    `foto` VARCHAR(500) DEFAULT NULL,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE IF NOT EXISTS `data_keagamaan` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `tipe` ENUM('masjid', 'musholla', 'tpq', 'wakaf', 'madin') NOT NULL,
