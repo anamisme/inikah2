@@ -74,6 +74,15 @@ CREATE TABLE IF NOT EXISTS `data_keagamaan` (
 CREATE INDEX idx_keagamaan_tipe ON `data_keagamaan` (`tipe`);
 CREATE INDEX idx_keagamaan_nama ON `data_keagamaan` (`nama`);
 
+CREATE TABLE IF NOT EXISTS `pondasi_sakinah` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `nama_pria` VARCHAR(255) NOT NULL,
+    `nama_wanita` VARCHAR(255) NOT NULL,
+    `alamat` VARCHAR(500) DEFAULT NULL,
+    `foto` VARCHAR(500) DEFAULT NULL,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- Index untuk pencarian cepat
 CREATE INDEX idx_sertifikat_nama ON `sertifikat` (`nama`);
 CREATE INDEX idx_jawaban_nama ON `jawaban_test` (`nama`, `tipe`);

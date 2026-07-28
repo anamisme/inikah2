@@ -158,6 +158,84 @@ switch ($action) {
         echo json_encode(['success' => true]);
         break;
 
+    // ===== PONDASI SAKINAH =====
+    case 'getPondasi':
+        $stmt = $pdo->query("SELECT * FROM pondasi_sakinah ORDER BY created_at DESC LIMIT 50");
+        echo json_encode($stmt->fetchAll());
+        break;
+
+    case 'addPondasi':
+        requireAuth();
+        $pria = clean($_POST['nama_pria'] ?? '');
+        $wanita = clean($_POST['nama_wanita'] ?? '');
+        $alamat = clean($_POST['alamat'] ?? '');
+
+        if (!$pria || !$wanita || !$alamat) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Semua field wajib diisi']);
+            exit;
+        }
+
+        $fotoPath = null;
+        if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = __DIR__ . '/../uploads/pondasi/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+
+            $ext = strtolower(pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION));
+            $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+            if (!in_array($ext, $allowed)) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Format file tidak didukung. Gunakan JPG, PNG, GIF, atau WebP.']);
+                exit;
+            }
+
+            if ($_FILES['foto']['size'] > 2 * 1024 * 1024) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Ukuran file maksimal 2MB.']);
+                exit;
+            }
+
+            $filename = uniqid('pondasi_') . '.' . $ext;
+            $destination = $uploadDir . $filename;
+
+            if (move_uploaded_file($_FILES['foto']['tmp_name'], $destination)) {
+                $fotoPath = 'uploads/pondasi/' . $filename;
+            } else {
+                http_response_code(500);
+                echo json_encode(['error' => 'Gagal mengupload foto']);
+                exit;
+            }
+        }
+
+        $stmt = $pdo->prepare("INSERT INTO pondasi_sakinah (nama_pria, nama_wanita, alamat, foto) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$pria, $wanita, $alamat, $fotoPath]);
+        echo json_encode(['success' => true]);
+        break;
+
+    case 'deletePondasi':
+        requireAuth();
+        $id = $_GET['id'] ?? '';
+        if (!$id) {
+            http_response_code(400);
+            echo json_encode(['error' => 'ID wajib']);
+            exit;
+        }
+
+        // Hapus foto jika ada
+        $stmt = $pdo->prepare("SELECT foto FROM pondasi_sakinah WHERE id = ?");
+        $stmt->execute([$id]);
+        $row = $stmt->fetch();
+        if ($row && $row['foto'] && file_exists(__DIR__ . '/../' . $row['foto'])) {
+            unlink(__DIR__ . '/../' . $row['foto']);
+        }
+
+        $stmt = $pdo->prepare("DELETE FROM pondasi_sakinah WHERE id = ?");
+        $stmt->execute([$id]);
+        echo json_encode(['success' => true]);
+        break;
+
     default:
         http_response_code(400);
         echo json_encode(['error' => 'Action tidak valid']);

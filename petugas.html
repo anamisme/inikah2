@@ -82,14 +82,7 @@
             width: 60px; height: 60px; border-radius: 10px;
             object-fit: cover; margin-right: 12px; border: 1px solid var(--border);
         }
-        .keagamaan-tab {
-            flex: 1; padding: 10px; border-radius: 10px; border: 1.5px solid var(--border);
-            background: #fff; font-size: 0.82rem; font-weight: 600;
-            cursor: pointer; text-align: center; color: var(--text);
-        }
-        .keagamaan-tab.active {
-            background: var(--green-deep); color: #fff; border-color: var(--green-deep);
-        }
+
     </style>
 </head>
 <body>
@@ -198,35 +191,35 @@
             </div>
         </div>
 
-        <!-- DATA KEAGAMAAN -->
+        <!-- FORM 3: PONDASI SAKINAH -->
         <div class="card">
-            <h3>🕌 Data Keagamaan</h3>
+            <h3>💍 Pondasi Sakinah</h3>
             <div class="note">⚠️ DATA INI DIISI KHUSUS OLEH PETUGAS KUA KARANGDADAP</div>
 
-            <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;">
-                <button onclick="switchKeagamaanTab('masjid')" id="tabMasjid" class="keagamaan-tab active">Masjid</button>
-                <button onclick="switchKeagamaanTab('musholla')" id="tabMusholla" class="keagamaan-tab">Musholla</button>
-                <button onclick="switchKeagamaanTab('tpq')" id="tabTpq" class="keagamaan-tab">TPQ</button>
-                <button onclick="switchKeagamaanTab('wakaf')" id="tabWakaf" class="keagamaan-tab">Wakaf</button>
-                <button onclick="switchKeagamaanTab('madin')" id="tabMadin" class="keagamaan-tab">Madin</button>
-            </div>
-
             <div class="form-group">
-                <label>Nama</label>
-                <input type="text" id="keagamaanNama" placeholder="Contoh: Masjid Al-Ikhlas" required>
+                <label>Nama Calon Pengantin Laki-Laki</label>
+                <input type="text" id="pondasiPria" required>
             </div>
             <div class="form-group">
-                <label>Desa</label>
-                <input type="text" id="keagamaanDesa" placeholder="Contoh: Desa Karangdadap" required>
+                <label>Nama Calon Pengantin Perempuan</label>
+                <input type="text" id="pondasiWanita" required>
             </div>
-            <button onclick="submitKeagamaan()" id="btnKeagamaan" class="btn-submit">Simpan Data</button>
-            <p id="keagamaanStatus" class="status-msg"></p>
+            <div class="form-group">
+                <label>Alamat</label>
+                <input type="text" id="pondasiAlamat" placeholder="Contoh: Desa Karangdadap" required>
+            </div>
+            <div class="form-group">
+                <label>Foto</label>
+                <input type="file" id="pondasiFoto" accept="image/*" required>
+            </div>
+            <button onclick="submitPondasi()" id="btnPondasi" class="btn-submit">Simpan Data</button>
+            <p id="pondasiStatus" class="status-msg"></p>
         </div>
 
-        <!-- DAFTAR KEAGAMAAN -->
+        <!-- DAFTAR PONDASI SAKINAH -->
         <div class="card">
-            <h3>📋 Daftar <span id="keagamaanJudulDaftar">Masjid</span></h3>
-            <div id="keagamaanList" class="data-list">
+            <h3>📋 Daftar Pondasi Sakinah</h3>
+            <div id="pondasiList" class="data-list">
                 <p style="color:var(--muted);font-size:0.85rem;">Memuat...</p>
             </div>
         </div>
@@ -255,7 +248,7 @@
                     document.getElementById('petugasPanel').style.display = 'block';
                     loadJadwal();
                     loadPetugas();
-                    loadKeagamaan();
+                    loadPondasi();
                 } else {
                     document.getElementById('loginError').style.display = 'block';
                 }
@@ -467,30 +460,17 @@
             return div.innerHTML;
         }
 
-        // ===== KEAGAMAAN =====
-        const KEAGAMAAN_API = 'api/keagamaan-api.php';
-        let currentKeagamaanTab = 'masjid';
+        // ===== PONDASI SAKINAH =====
+        function submitPondasi() {
+            var pria = document.getElementById('pondasiPria').value.trim();
+            var wanita = document.getElementById('pondasiWanita').value.trim();
+            var alamat = document.getElementById('pondasiAlamat').value.trim();
+            var foto = document.getElementById('pondasiFoto').files[0];
+            var status = document.getElementById('pondasiStatus');
+            var btn = document.getElementById('btnPondasi');
 
-        function switchKeagamaanTab(tipe) {
-            currentKeagamaanTab = tipe;
-            document.getElementById('tabMasjid').classList.toggle('active', tipe === 'masjid');
-            document.getElementById('tabMusholla').classList.toggle('active', tipe === 'musholla');
-            document.getElementById('tabTpq').classList.toggle('active', tipe === 'tpq');
-            document.getElementById('tabWakaf').classList.toggle('active', tipe === 'wakaf');
-            document.getElementById('tabMadin').classList.toggle('active', tipe === 'madin');
-            var judul = { masjid: 'Masjid', musholla: 'Musholla', tpq: 'TPQ', wakaf: 'Tanah Wakaf', madin: 'Madin' };
-            document.getElementById('keagamaanJudulDaftar').textContent = judul[tipe];
-            loadKeagamaan();
-        }
-
-        function submitKeagamaan() {
-            var nama = document.getElementById('keagamaanNama').value.trim();
-            var desa = document.getElementById('keagamaanDesa').value.trim();
-            var status = document.getElementById('keagamaanStatus');
-            var btn = document.getElementById('btnKeagamaan');
-
-            if (!nama || !desa) {
-                status.textContent = 'Nama dan Desa wajib diisi!';
+            if (!pria || !wanita || !alamat || !foto) {
+                status.textContent = 'Semua field wajib diisi termasuk foto!';
                 status.style.color = '#ef4444';
                 status.style.display = 'block';
                 return;
@@ -499,19 +479,26 @@
             btn.textContent = 'Menyimpan...';
             btn.disabled = true;
 
-            fetch(KEAGAMAAN_API + '?action=add&token=' + encodeURIComponent(AUTH_TOKEN), {
+            var formData = new FormData();
+            formData.append('nama_pria', pria);
+            formData.append('nama_wanita', wanita);
+            formData.append('alamat', alamat);
+            formData.append('foto', foto);
+
+            fetch(API_URL + '?action=addPondasi&token=' + encodeURIComponent(AUTH_TOKEN), {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: 'tipe=' + encodeURIComponent(currentKeagamaanTab) + '&nama=' + encodeURIComponent(nama) + '&desa=' + encodeURIComponent(desa)
+                body: formData
             })
             .then(function(r) { return r.json(); })
             .then(function(res) {
                 if (res.success) {
-                    status.textContent = 'Data berhasil disimpan!';
+                    status.textContent = 'Data Pondasi Sakinah berhasil disimpan!';
                     status.style.color = '#059669';
-                    document.getElementById('keagamaanNama').value = '';
-                    document.getElementById('keagamaanDesa').value = '';
-                    loadKeagamaan();
+                    document.getElementById('pondasiPria').value = '';
+                    document.getElementById('pondasiWanita').value = '';
+                    document.getElementById('pondasiAlamat').value = '';
+                    document.getElementById('pondasiFoto').value = '';
+                    loadPondasi();
                 } else {
                     status.textContent = res.error || 'Gagal menyimpan.';
                     status.style.color = '#ef4444';
@@ -529,36 +516,40 @@
             });
         }
 
-        function loadKeagamaan() {
-            fetch(KEAGAMAAN_API + '?action=get&tipe=' + encodeURIComponent(currentKeagamaanTab))
+        function loadPondasi() {
+            fetch(API_URL + '?action=getPondasi')
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
-                    var container = document.getElementById('keagamaanList');
+                    var container = document.getElementById('pondasiList');
                     if (!data || data.length === 0) {
-                        container.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;">Belum ada data.</p>';
+                        container.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;">Belum ada data Pondasi Sakinah.</p>';
                         return;
                     }
                     var html = '';
                     data.forEach(function(item) {
-                        html += '<div class="data-item"><div class="data-row"><div>';
-                        html += '<p style="font-weight:700;">' + escapeHtml(item.nama) + '</p>';
-                        html += '<p class="label">📍 ' + escapeHtml(item.desa) + '</p>';
+                        html += '<div class="data-item"><div class="data-row">';
+                        if (item.foto) {
+                            html += '<img src="' + escapeHtml(item.foto) + '" class="petugas-foto" alt="Foto">';
+                        }
+                        html += '<div style="flex:1;">';
+                        html += '<p style="font-weight:700;">' + escapeHtml(item.nama_pria) + ' & ' + escapeHtml(item.nama_wanita) + '</p>';
+                        html += '<p class="label">📍 ' + escapeHtml(item.alamat) + '</p>';
                         html += '</div>';
-                        html += '<button onclick="hapusKeagamaan(' + item.id + ')" class="btn-hapus">Hapus</button>';
+                        html += '<button onclick="hapusPondasi(' + item.id + ')" class="btn-hapus">Hapus</button>';
                         html += '</div></div>';
                     });
                     container.innerHTML = html;
                 })
                 .catch(function() {
-                    document.getElementById('keagamaanList').innerHTML = '<p style="color:#ef4444;font-size:0.85rem;">Gagal memuat data.</p>';
+                    document.getElementById('pondasiList').innerHTML = '<p style="color:#ef4444;font-size:0.85rem;">Gagal memuat data.</p>';
                 });
         }
 
-        function hapusKeagamaan(id) {
-            if (!confirm('Hapus data ini?')) return;
-            fetch(KEAGAMAAN_API + '?action=delete&id=' + id + '&token=' + encodeURIComponent(AUTH_TOKEN))
+        function hapusPondasi(id) {
+            if (!confirm('Hapus data Pondasi Sakinah ini?')) return;
+            fetch(API_URL + '?action=deletePondasi&id=' + id + '&token=' + encodeURIComponent(AUTH_TOKEN))
                 .then(function(r) { return r.json(); })
-                .then(function() { loadKeagamaan(); })
+                .then(function() { loadPondasi(); })
                 .catch(function() { alert('Gagal menghapus.'); });
         }
     </script>
