@@ -927,49 +927,8 @@ body.dark-mode .keagamaan-publik-tab.active {
 
 /* ICON PERNIKAHAN */
 /* ════════════════════════════════
-   CARD PERNIKAHAN GRADIENT
+   ICON PERNIKAHAN
 ════════════════════════════════ */
-.ios-main-card-nikah {
-    background:
-        linear-gradient(145deg, #fff1f2 0%, #ffe4e6 30%, #fecdd3 100%) padding-box,
-        linear-gradient(135deg, rgba(244, 63, 94, 0.7) 0%, rgba(225, 29, 72, 0.1) 50%, rgba(190, 18, 60, 0.6) 100%) border-box;
-    border: 1.5px solid transparent;
-    border-radius: 28px;
-    padding: 20px;
-    margin-bottom: 28px;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-    box-shadow:
-        0 8px 0 rgba(244, 63, 94, 0.12),
-        0 16px 24px rgba(190, 18, 60, 0.08),
-        inset 0 2px 4px rgba(255, 255, 255, 1);
-}
-.ios-main-card-nikah:hover {
-    background:
-        linear-gradient(145deg, #fff1f2 0%, #ffe4e6 30%, #fecdd3 100%) padding-box,
-        linear-gradient(135deg, rgba(244, 63, 94, 1) 0%, rgba(225, 29, 72, 0.2) 50%, rgba(190, 18, 60, 0.9) 100%) border-box;
-}
-.ios-main-card-nikah:active {
-    background:
-        linear-gradient(145deg, #fff1f2 0%, #ffe4e6 30%, #fecdd3 100%) padding-box,
-        linear-gradient(135deg, rgba(244, 63, 94, 1) 0%, rgba(225, 29, 72, 0.3) 50%, rgba(190, 18, 60, 1) 100%) border-box;
-}
-
-body.dark-mode .ios-main-card-nikah {
-    background:
-        linear-gradient(145deg, #1e293b 0%, #1a1a2e 30%, #16213e 100%) padding-box,
-        linear-gradient(135deg, rgba(244, 63, 94, 0.5) 0%, rgba(225, 29, 72, 0.08) 50%, rgba(190, 18, 60, 0.4) 100%) border-box;
-}
-body.dark-mode .ios-main-card-nikah:hover {
-    background:
-        linear-gradient(145deg, #1e293b 0%, #1a1a2e 30%, #16213e 100%) padding-box,
-        linear-gradient(135deg, rgba(244, 63, 94, 0.8) 0%, rgba(225, 29, 72, 0.15) 50%, rgba(190, 18, 60, 0.7) 100%) border-box;
-}
-body.dark-mode .ios-main-card-nikah .ios-card-title {
-    color: #fda4af;
-}
-
 .icon-nikah {
     width: 50px; height: 50px; border-radius: 16px;
     background: linear-gradient(145deg, #f43f5e, #e11d48);
