@@ -533,12 +533,12 @@ setTimeout(loadBanners, 1500);
 let keagamaanCurrentTab = 'masjid';
 
 window.bukaModalKeagamaan = function() {
-    document.getElementById('keagamaanModal').classList.add('active');
+    document.getElementById('keagamaanModal').classList.add('show');
     loadKeagamaanPublik('masjid');
 };
 
 window.tutupModalKeagamaan = function() {
-    document.getElementById('keagamaanModal').classList.remove('active');
+    document.getElementById('keagamaanModal').classList.remove('show');
 };
 
 window.loadKeagamaanPublik = function(tipe) {
