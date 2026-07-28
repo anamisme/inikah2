@@ -553,7 +553,7 @@ function loadPondasiData() {
     var container = document.getElementById('pondasiContent');
     container.innerHTML = '<div class="text-center text-muted p-4"><div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>Memuat data...</div>';
 
-    fetch('api/jadwal-api.php?action=getPetugas')
+    fetch('api/jadwal-api.php?action=getPondasi')
         .then(function(r) { return r.json(); })
         .then(function(data) {
             if (!data || data.length === 0) {
@@ -567,11 +567,9 @@ function loadPondasiData() {
                     html += '<img src="' + _esc(item.foto) + '" onclick="openFotoLightbox(this.src)" style="width:100%;max-height:220px;object-fit:cover;border-radius:10px;margin-bottom:12px;cursor:pointer;border:1px solid rgba(0,0,0,0.06);" alt="Foto Akad">';
                 }
                 html += '<p style="font-size:0.9rem;font-weight:700;margin-bottom:4px;">' + _esc(item.nama_pria) + ' & ' + _esc(item.nama_wanita) + '</p>';
-                if (item.desa) {
-                    html += '<p style="font-size:0.78rem;color:#64748b;">📍 Alamat: ' + _esc(item.desa) + '</p>';
+                if (item.alamat) {
+                    html += '<p style="font-size:0.78rem;color:#64748b;">📍 Alamat: ' + _esc(item.alamat) + '</p>';
                 }
-                html += '<p style="font-size:0.78rem;color:#94a3b8;">📅 Tanggal: ' + _esc(item.tanggal) + ' · ⏰ Waktu: ' + _esc(item.waktu || '') + '</p>';
-                html += '<p style="font-size:0.72rem;color:#94a3b8;">👤 Petugas: ' + _esc(item.nama_petugas) + '</p>';
                 html += '</div>';
             });
             html += '</div>';
