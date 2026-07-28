@@ -846,6 +846,7 @@ function renderKeagamaanList(rows, tipe, container) {
         } else if (tipe === 'wakaf') {
             if (item.luas) html += '<p style="font-size:0.76rem;color:#64748b;">Luas: ' + _esc(item.luas) + '</p>';
             if (item.alamat) html += '<p style="font-size:0.76rem;color:#64748b;">📍 Alamat: ' + _esc(item.alamat) + '</p>';
+            if (item.desa) html += '<p style="font-size:0.76rem;color:#94a3b8;">🏘️ Kelurahan: ' + _esc(item.desa) + '</p>';
             if (item.aiw) html += '<p style="font-size:0.72rem;color:#94a3b8;">AIW: ' + _esc(item.aiw) + '</p>';
             if (item.sertifikat) html += '<p style="font-size:0.72rem;color:#94a3b8;">Sertifikat: ' + _esc(item.sertifikat) + '</p>';
             if (item.nadzir) html += '<p style="font-size:0.72rem;color:#94a3b8;">Nadzir: ' + _esc(item.nadzir) + '</p>';
