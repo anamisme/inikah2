@@ -673,7 +673,7 @@ window.loadMasjidTab = function(sheetName) {
             rows.forEach(function(item) {
                 html += '<div style="padding:14px 16px;background:#fff;">';
                 html += '<p style="font-weight:600;font-size:0.88rem;margin-bottom:3px;color:var(--text);">' + _esc(item.nama) + '</p>';
-                if (item.alamat) html += '<p style="font-size:0.76rem;color:#64748b;">📍 ' + _esc(item.alamat) + '</p>';
+                if (item.alamat) html += '<p style="font-size:0.76rem;color:#64748b;">📍 Alamat: ' + _esc(item.alamat) + '</p>';
                 html += '</div>';
             });
             html += '</div>';
