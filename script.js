@@ -738,6 +738,7 @@ window.loadWakafTab = function(kelurahan) {
     fetch(url)
         .then(function(r) { return r.text(); })
         .then(function(csv) {
+            csv = csv.replace(/\r/g, '');
             var lines = parseCSVLines(csv);
             if (lines.length < 2) {
                 container.innerHTML = '<div class="text-center p-4"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data.</p></div>';
@@ -832,6 +833,7 @@ window.filterKeagamaanSheet = function(tipe) {
 };
 
 function parseCSVLines(csv) {
+    csv = csv.replace(/\r\n?/g, '\n');
     var result = [];
     var row = [];
     var field = '';
@@ -846,10 +848,9 @@ function parseCSVLines(csv) {
         } else {
             if (ch === '"') { inQuotes = true; }
             else if (ch === ',') { row.push(field); field = ''; }
-            else if (ch === '\n' || (ch === '\r' && next === '\n')) {
+            else if (ch === '\n') {
                 row.push(field); field = '';
                 result.push(row); row = [];
-                if (ch === '\r') i++;
             }
             else { field += ch; }
         }
