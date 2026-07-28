@@ -584,10 +584,10 @@ function loadPondasiData() {
 
 // ===== DATA KEAGAMAAN (GOOGLE SHEETS) =====
 const KEAGAMAAN_SHEETS = {
-    masjid:  '1nVmxypaABxf0IrUY7DKa3Z6MA3SFLSIJ',
+    masjid:  '1QCXzjJtm2XuL2JjmIyI288BRpli9pWtJx3EDQ91jWns',
     tpq:     '1sgstI0bnvw6OGdqENQON2lhUun5agfWi5PgdT_o6gVI',
     madin:   '1t_ojSS6B-wXKC3uI4MSWhC_HENrwa1HnzTkjbbzQePk',
-    wakaf:   '14Hkdpz55zO_qSmCBpJFeH0yHZOIoXvFS'
+    wakaf:   '10FMv0vrJluT1t4ZqPMwGo6afpgGXxXTRYcqAjqih-6I'
 };
 let _keagamaanData = {};
 
@@ -658,14 +658,41 @@ window.filterKeagamaanSheet = function(tipe) {
     renderKeagamaanList(filtered, tipe, document.getElementById(contentId[tipe]));
 };
 
+function parseCSVLines(csv) {
+    var result = [];
+    var row = [];
+    var field = '';
+    var inQuotes = false;
+    for (var i = 0; i < csv.length; i++) {
+        var ch = csv[i];
+        var next = csv[i + 1];
+        if (inQuotes) {
+            if (ch === '"' && next === '"') { field += '"'; i++; }
+            else if (ch === '"') { inQuotes = false; }
+            else { field += ch; }
+        } else {
+            if (ch === '"') { inQuotes = true; }
+            else if (ch === ',') { row.push(field); field = ''; }
+            else if (ch === '\n' || (ch === '\r' && next === '\n')) {
+                row.push(field); field = '';
+                result.push(row); row = [];
+                if (ch === '\r') i++;
+            }
+            else { field += ch; }
+        }
+    }
+    if (field || row.length) { row.push(field); result.push(row); }
+    return result;
+}
+
 function parseKeagamaanCSV(csv, tipe) {
-    var lines = csv.split('\n');
+    var lines = parseCSVLines(csv);
     if (lines.length < 2) return [];
-    var headers = lines[0].split(',').map(function(h) { return h.replace(/"/g, '').trim().toLowerCase(); });
+    var headers = lines[0].map(function(h) { return h.replace(/"/g, '').trim().toLowerCase(); });
 
     var rows = [];
     for (var i = 1; i < lines.length; i++) {
-        var cols = lines[i].split(',');
+        var cols = lines[i];
         if (cols.length < 2) continue;
 
         var item = {};
@@ -704,6 +731,9 @@ function parseKeagamaanCSV(csv, tipe) {
 
 function colVal(cols, headers, name) {
     var idx = headers.indexOf(name);
+    if (idx < 0) {
+        idx = headers.findIndex(function(h) { return h.replace(/\s+/g, ' ').trim() === name.replace(/\s+/g, ' ').trim(); });
+    }
     if (idx < 0) return '';
     return (cols[idx] || '').replace(/"/g, '').trim();
 }
