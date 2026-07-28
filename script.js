@@ -682,6 +682,7 @@ window.loadMasjidTab = function(sheetName) {
                     alamat: (colVal(cols, headers, 'alamat') || '').trim()
                 });
             }
+            rows.sort(function(a, b) { return a.nama.localeCompare(b.nama); });
             if (rows.length === 0) {
                 container.innerHTML = '<div class="text-center p-4"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data.</p></div>';
                 return;
@@ -756,6 +757,7 @@ window.loadWakafTab = function(kelurahan) {
                 if (!alamat && !luas) continue;
                 rows.push({ luas: luas, alamat: alamat, desa: desa, aiw: aiw, sertifikat: sertifikat, nadzir: nadzir });
             }
+            rows.sort(function(a, b) { return a.alamat.localeCompare(b.alamat); });
             if (rows.length === 0) {
                 container.innerHTML = '<div class="text-center p-4"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data.</p></div>';
                 return;
