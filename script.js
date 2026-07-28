@@ -530,32 +530,40 @@ function resetBannerInterval() {
 setTimeout(loadBanners, 1500);
 
 // ===== DATA KEAGAMAAN =====
-let keagamaanCurrentTab = 'masjid';
-
-window.bukaModalKeagamaan = function() {
-    document.getElementById('keagamaanModal').classList.add('show');
-    loadKeagamaanPublik('masjid');
+window.bukaModalKeagamaanTarget = function(modalId, tipe, contentId, tabsId) {
+    var modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+        loadKeagamaanPublik(tipe, contentId, tabsId);
+    }
 };
 
-window.tutupModalKeagamaan = function() {
-    document.getElementById('keagamaanModal').classList.remove('show');
+window.tutupModalKeagamaan = function(modalId) {
+    var modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
 };
 
-window.loadKeagamaanPublik = function(tipe) {
-    keagamaanCurrentTab = tipe;
-    document.getElementById('kTabMasjid').classList.toggle('active', tipe === 'masjid');
-    document.getElementById('kTabMusholla').classList.toggle('active', tipe === 'musholla');
-    document.getElementById('kTabTpq').classList.toggle('active', tipe === 'tpq');
-
-    var container = document.getElementById('keagamaanPublikContent');
+window.loadKeagamaanPublik = function(tipe, contentId, tabsId) {
+    var container = document.getElementById(contentId);
+    if (!container) return;
     container.innerHTML = '<div class="text-center text-muted p-4"><div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>Memuat data...</div>';
+
+    if (tabsId) {
+        document.querySelectorAll('#' + tabsId + ' .keagamaan-publik-tab').forEach(function(btn) {
+            btn.classList.toggle('active', btn.getAttribute('data-tab') === tipe);
+        });
+    }
 
     fetch('api/keagamaan-api.php?action=get&tipe=' + encodeURIComponent(tipe))
         .then(function(r) { return r.json(); })
         .then(function(data) {
             if (!data || data.length === 0) {
-                var labels = { masjid: 'masjid', musholla: 'musholla', tpq: 'TPQ' };
-                container.innerHTML = '<div class="text-center p-4"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data ' + labels[tipe] + '.</p></div>';
+                var labels = { masjid: 'masjid', musholla: 'musholla', tpq: 'TPQ', wakaf: 'tanah wakaf', madin: 'Madin' };
+                container.innerHTML = '<div class="text-center p-4"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data ' + (labels[tipe] || tipe) + '.</p></div>';
                 return;
             }
             var html = '<div style="display:flex;flex-direction:column;gap:1px;background:rgba(0,0,0,0.04);border-radius:14px;overflow:hidden;">';

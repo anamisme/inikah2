@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `jawaban_test` (
 
 CREATE TABLE IF NOT EXISTS `data_keagamaan` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `tipe` ENUM('masjid', 'musholla', 'tpq') NOT NULL,
+    `tipe` ENUM('masjid', 'musholla', 'tpq', 'wakaf', 'madin') NOT NULL,
     `nama` VARCHAR(255) NOT NULL,
     `desa` VARCHAR(255) NOT NULL,
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP

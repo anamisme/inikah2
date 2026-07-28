@@ -133,26 +133,89 @@
         </div>
     </div>
 
-    <!-- MODAL DATA KEAGAMAAN -->
-    <div id="keagamaanModal" class="app-modal-overlay">
+    <!-- MODAL MASJID & MUSHOLA -->
+    <div id="masjidMusholaModal" class="app-modal-overlay">
         <div class="app-modal-content" style="height: auto; max-height: 85vh; max-height: 85dvh; overflow-y: auto;">
-            <button class="app-modal-close" onclick="tutupModalKeagamaan()" title="Tutup">
+            <button class="app-modal-close" onclick="tutupModalKeagamaan('masjidMusholaModal')" title="Tutup">
                 <span class="material-icons-outlined">close</span>
             </button>
             <h3 class="app-modal-title">
                 <span class="material-icons-outlined" style="font-size:22px;color:#6366f1;margin-right:6px;vertical-align:middle;">account_balance</span>
-                Data Keagamaan
+                Daftar Masjid & Mushola
             </h3>
             <div style="padding:16px;">
-                <p class="text-muted small mb-3">Daftar masjid, musholla, dan TPQ di wilayah KUA Karangdadap.</p>
-
-                <div style="display:flex;gap:8px;margin-bottom:16px;" id="keagamaanTabs">
-                    <button onclick="loadKeagamaanPublik('masjid')" id="kTabMasjid" class="keagamaan-publik-tab active">Masjid</button>
-                    <button onclick="loadKeagamaanPublik('musholla')" id="kTabMusholla" class="keagamaan-publik-tab">Musholla</button>
-                    <button onclick="loadKeagamaanPublik('tpq')" id="kTabTpq" class="keagamaan-publik-tab">TPQ</button>
+                <p class="text-muted small mb-3">Daftar masjid dan musholla di wilayah KUA Karangdadap.</p>
+                <div style="display:flex;gap:8px;margin-bottom:16px;" id="masjidMusholaTabs">
+                    <button onclick="loadKeagamaanPublik('masjid','masjidMusholaPublikContent','masjidMusholaTabs')" class="keagamaan-publik-tab active" data-tab="masjid">Masjid</button>
+                    <button onclick="loadKeagamaanPublik('musholla','masjidMusholaPublikContent','masjidMusholaTabs')" class="keagamaan-publik-tab" data-tab="musholla">Musholla</button>
                 </div>
+                <div id="masjidMusholaPublikContent">
+                    <div class="text-center text-muted p-4">
+                        <div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>
+                        Memuat data...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                <div id="keagamaanPublikContent">
+    <!-- MODAL TANAH WAKAF -->
+    <div id="wakafModal" class="app-modal-overlay">
+        <div class="app-modal-content" style="height: auto; max-height: 85vh; max-height: 85dvh; overflow-y: auto;">
+            <button class="app-modal-close" onclick="tutupModalKeagamaan('wakafModal')" title="Tutup">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <h3 class="app-modal-title">
+                <span class="material-icons-outlined" style="font-size:22px;color:#d97706;margin-right:6px;vertical-align:middle;">landscape</span>
+                Data Tanah Wakaf
+            </h3>
+            <div style="padding:16px;">
+                <p class="text-muted small mb-3">Daftar tanah wakaf di wilayah KUA Karangdadap.</p>
+                <div id="wakafPublikContent">
+                    <div class="text-center text-muted p-4">
+                        <div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>
+                        Memuat data...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL TPQ -->
+    <div id="tpqModal" class="app-modal-overlay">
+        <div class="app-modal-content" style="height: auto; max-height: 85vh; max-height: 85dvh; overflow-y: auto;">
+            <button class="app-modal-close" onclick="tutupModalKeagamaan('tpqModal')" title="Tutup">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <h3 class="app-modal-title">
+                <span class="material-icons-outlined" style="font-size:22px;color:#059669;margin-right:6px;vertical-align:middle;">school</span>
+                Data TPQ
+            </h3>
+            <div style="padding:16px;">
+                <p class="text-muted small mb-3">Daftar Taman Pendidikan Al-Qur'an di wilayah KUA Karangdadap.</p>
+                <div id="tpqPublikContent">
+                    <div class="text-center text-muted p-4">
+                        <div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>
+                        Memuat data...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL MADIN -->
+    <div id="madinModal" class="app-modal-overlay">
+        <div class="app-modal-content" style="height: auto; max-height: 85vh; max-height: 85dvh; overflow-y: auto;">
+            <button class="app-modal-close" onclick="tutupModalKeagamaan('madinModal')" title="Tutup">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <h3 class="app-modal-title">
+                <span class="material-icons-outlined" style="font-size:22px;color:#7c3aed;margin-right:6px;vertical-align:middle;">auto_stories</span>
+                Data Madin
+            </h3>
+            <div style="padding:16px;">
+                <p class="text-muted small mb-3">Daftar Madrasah Diniyah di wilayah KUA Karangdadap.</p>
+                <div id="madinPublikContent">
                     <div class="text-center text-muted p-4">
                         <div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>
                         Memuat data...
@@ -367,7 +430,7 @@
             </div>
 
             <!-- CARD: DATA KEAGAMAAN -->
-            <div class="ios-main-card" onclick="event.stopPropagation(); bukaModalKeagamaan()" style="cursor:pointer;">
+            <div class="ios-main-card" onclick="toggleMainMenu('keagamaanSubmenu','keagamaanChevron')">
                 <div class="ios-card-header">
                     <div class="ios-card-icon-title">
                         <div class="ios-card-icon icon-keagamaan">
@@ -375,10 +438,68 @@
                         </div>
                         <div>
                             <h2 class="ios-card-title">Data Keagamaan</h2>
-                            <span class="ios-card-desc">Daftar masjid, musholla & TPQ</span>
+                            <span class="ios-card-desc">Daftar masjid, wakaf, TPQ & Madin</span>
                         </div>
                     </div>
-                    <span class="material-icons-outlined chevron-main">chevron_right</span>
+                    <span class="material-icons-outlined chevron-main" id="keagamaanChevron">chevron_right</span>
+                </div>
+
+                <div class="ios-submenu-wrapper" id="keagamaanSubmenu">
+                    <div class="ios-submenu-inner" onclick="event.stopPropagation()">
+
+                        <div onclick="event.stopPropagation(); bukaModalKeagamaanTarget('masjidMusholaModal','masjid','masjidMusholaPublikContent','masjidMusholaTabs')" class="sub-list-item" style="cursor:pointer;">
+                            <div class="sub-list-left">
+                                <div class="sub-badge badge-icon">
+                                    <span class="material-icons-outlined" style="font-size:16px;">account_balance</span>
+                                </div>
+                                <div class="sub-title-box">
+                                    <span class="sub-title">Masjid & Mushola</span>
+                                    <span class="sub-desc">Daftar masjid dan musholla di wilayah KUA</span>
+                                </div>
+                            </div>
+                            <span class="material-icons-outlined" style="font-size:20px;color:#94a3b8;">chevron_right</span>
+                        </div>
+
+                        <div onclick="event.stopPropagation(); bukaModalKeagamaanTarget('wakafModal','wakaf','wakafPublikContent',null)" class="sub-list-item" style="cursor:pointer;">
+                            <div class="sub-list-left">
+                                <div class="sub-badge badge-icon">
+                                    <span class="material-icons-outlined" style="font-size:16px;">landscape</span>
+                                </div>
+                                <div class="sub-title-box">
+                                    <span class="sub-title">Data Tanah Wakaf</span>
+                                    <span class="sub-desc">Daftar tanah wakaf di wilayah KUA</span>
+                                </div>
+                            </div>
+                            <span class="material-icons-outlined" style="font-size:20px;color:#94a3b8;">chevron_right</span>
+                        </div>
+
+                        <div onclick="event.stopPropagation(); bukaModalKeagamaanTarget('tpqModal','tpq','tpqPublikContent',null)" class="sub-list-item" style="cursor:pointer;">
+                            <div class="sub-list-left">
+                                <div class="sub-badge badge-icon">
+                                    <span class="material-icons-outlined" style="font-size:16px;">school</span>
+                                </div>
+                                <div class="sub-title-box">
+                                    <span class="sub-title">Data TPQ</span>
+                                    <span class="sub-desc">Taman Pendidikan Al-Qur'an</span>
+                                </div>
+                            </div>
+                            <span class="material-icons-outlined" style="font-size:20px;color:#94a3b8;">chevron_right</span>
+                        </div>
+
+                        <div onclick="event.stopPropagation(); bukaModalKeagamaanTarget('madinModal','madin','madinPublikContent',null)" class="sub-list-item" style="cursor:pointer;">
+                            <div class="sub-list-left">
+                                <div class="sub-badge badge-icon">
+                                    <span class="material-icons-outlined" style="font-size:16px;">auto_stories</span>
+                                </div>
+                                <div class="sub-title-box">
+                                    <span class="sub-title">Data Madin</span>
+                                    <span class="sub-desc">Madrasah Diniyah di wilayah KUA</span>
+                                </div>
+                            </div>
+                            <span class="material-icons-outlined" style="font-size:20px;color:#94a3b8;">chevron_right</span>
+                        </div>
+
+                    </div>
                 </div>
             </div>
 
@@ -458,7 +579,7 @@
 
     </div>
 
-    <script src="script.js?v=6"></script>
+    <script src="script.js?v=7"></script>
 </body>
 </html>
 

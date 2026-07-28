@@ -199,10 +199,12 @@
             <h3>🕌 Data Keagamaan</h3>
             <div class="note">⚠️ DATA INI DIISI KHUSUS OLEH PETUGAS KUA KARANGDADAP</div>
 
-            <div style="display:flex;gap:6px;margin-bottom:16px;">
+            <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;">
                 <button onclick="switchKeagamaanTab('masjid')" id="tabMasjid" class="keagamaan-tab active">Masjid</button>
                 <button onclick="switchKeagamaanTab('musholla')" id="tabMusholla" class="keagamaan-tab">Musholla</button>
                 <button onclick="switchKeagamaanTab('tpq')" id="tabTpq" class="keagamaan-tab">TPQ</button>
+                <button onclick="switchKeagamaanTab('wakaf')" id="tabWakaf" class="keagamaan-tab">Wakaf</button>
+                <button onclick="switchKeagamaanTab('madin')" id="tabMadin" class="keagamaan-tab">Madin</button>
             </div>
 
             <div class="form-group">
@@ -467,7 +469,9 @@
             document.getElementById('tabMasjid').classList.toggle('active', tipe === 'masjid');
             document.getElementById('tabMusholla').classList.toggle('active', tipe === 'musholla');
             document.getElementById('tabTpq').classList.toggle('active', tipe === 'tpq');
-            var judul = { masjid: 'Masjid', musholla: 'Musholla', tpq: 'TPQ' };
+            document.getElementById('tabWakaf').classList.toggle('active', tipe === 'wakaf');
+            document.getElementById('tabMadin').classList.toggle('active', tipe === 'madin');
+            var judul = { masjid: 'Masjid', musholla: 'Musholla', tpq: 'TPQ', wakaf: 'Tanah Wakaf', madin: 'Madin' };
             document.getElementById('keagamaanJudulDaftar').textContent = judul[tipe];
             loadKeagamaan();
         }

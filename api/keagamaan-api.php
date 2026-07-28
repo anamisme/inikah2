@@ -31,7 +31,7 @@ switch ($action) {
 
     case 'get':
         $tipe = clean($_GET['tipe'] ?? '');
-        if (!in_array($tipe, ['masjid', 'musholla', 'tpq'])) {
+        if (!in_array($tipe, ['masjid', 'musholla', 'tpq', 'wakaf', 'madin'])) {
             echo json_encode(['error' => 'Parameter tipe tidak valid.']);
             break;
         }
@@ -46,7 +46,7 @@ switch ($action) {
         $nama  = clean($_POST['nama'] ?? $_GET['nama'] ?? '');
         $desa  = clean($_POST['desa'] ?? $_GET['desa'] ?? '');
 
-        if (!in_array($tipe, ['masjid', 'musholla', 'tpq'])) {
+        if (!in_array($tipe, ['masjid', 'musholla', 'tpq', 'wakaf', 'madin'])) {
             echo json_encode(['error' => 'Tipe tidak valid.']); break;
         }
         if (!$nama || !$desa) {
