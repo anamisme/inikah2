@@ -584,19 +584,38 @@ function loadPondasiData() {
 
 // ===== DATA KEAGAMAAN (GOOGLE SHEETS) =====
 const KEAGAMAAN_SHEETS = {
-    masjid:  '1QCXzjJtm2XuL2JjmIyI288BRpli9pWtJx3EDQ91jWns',
     tpq:     '1sgstI0bnvw6OGdqENQON2lhUun5agfWi5PgdT_o6gVI',
     madin:   '1t_ojSS6B-wXKC3uI4MSWhC_HENrwa1HnzTkjbbzQePk',
     wakaf:   '10FMv0vrJluT1t4ZqPMwGo6afpgGXxXTRYcqAjqih-6I'
 };
+const MASJID_SHEET_ID = '1QCXzjJtm2XuL2JjmIyI288BRpli9pWtJx3EDQ91jWns';
+const MASJID_DESA_TABS = [
+    { id: 'DS.KEDUNGKEBO', label: 'Kedungkebo' },
+    { id: 'DS.Karangdadap', label: 'Karangdadap' },
+    { id: 'DS.PANGKAH', label: 'Pangkah' },
+    { id: 'DS.JREBENG', label: 'Jrebeng' },
+    { id: 'DS.PEGANDON', label: 'Pegandon' },
+    { id: 'DS.KEBONROWO PUCANG', label: 'Kebonrowo Pucang' },
+    { id: 'DS.KALILEMBU', label: 'Kalilembu' },
+    { id: 'DS.LOGANDENG', label: 'Logandeng' },
+    { id: 'DS.PAGUMENGANMAS', label: 'Pagumenganmas' },
+    { id: 'DS.KEBONSARI', label: 'Kebonsari' },
+    { id: 'DS.KALIGAWE', label: 'Kaligawe' }
+];
 let _keagamaanData = {};
+let _masjidCurrentTab = 'DS.KEDUNGKEBO';
 
 window.bukaModalKeagamaanTarget = function(modalId, tipe, contentId, tabsId) {
     var modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.add('show');
         document.body.style.overflow = 'hidden';
-        loadKeagamaanPublik(tipe, contentId, tabsId);
+        if (tipe === 'masjid') {
+            renderMasjidTabs();
+            loadMasjidTab('DS.KEDUNGKEBO');
+        } else {
+            loadKeagamaanPublik(tipe, contentId, tabsId);
+        }
     }
 };
 
@@ -606,6 +625,81 @@ window.tutupModalKeagamaan = function(modalId) {
         modal.classList.remove('show');
         document.body.style.overflow = '';
     }
+};
+
+function renderMasjidTabs() {
+    var container = document.getElementById('masjidDesaTabs');
+    if (!container) return;
+    var html = '';
+    MASJID_DESA_TABS.forEach(function(tab) {
+        html += '<button onclick="loadMasjidTab(\'' + tab.id + '\')" class="keagamaan-publik-tab' + (tab.id === _masjidCurrentTab ? ' active' : '') + '" data-tab="' + tab.id + '">' + tab.label + '</button>';
+    });
+    container.innerHTML = html;
+}
+
+window.loadMasjidTab = function(sheetName) {
+    _masjidCurrentTab = sheetName;
+    document.querySelectorAll('#masjidDesaTabs .keagamaan-publik-tab').forEach(function(btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-tab') === sheetName);
+    });
+    var container = document.getElementById('masjidMusholaPublikContent');
+    container.innerHTML = '<div class="text-center text-muted p-4"><div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>Memuat data...</div>';
+
+    var url = 'https://docs.google.com/spreadsheets/d/' + MASJID_SHEET_ID + '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent(sheetName);
+    fetch(url)
+        .then(function(r) { return r.text(); })
+        .then(function(csv) {
+            var lines = parseCSVLines(csv);
+            if (lines.length < 2) {
+                container.innerHTML = '<div class="text-center p-4"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data.</p></div>';
+                return;
+            }
+            var headers = lines[0].map(function(h) { return h.replace(/"/g, '').trim().toLowerCase(); });
+            var rows = [];
+            for (var i = 1; i < lines.length; i++) {
+                var cols = lines[i];
+                var nama = (colVal(cols, headers, 'nama masjid/musholah') || colVal(cols, headers, 'nama masjid/mushola') || '').trim();
+                if (!nama) continue;
+                rows.push({
+                    nama: nama,
+                    alamat: (colVal(cols, headers, 'alamat') || '').trim(),
+                    pengurus: (colVal(cols, headers, 'nama pengurus') || colVal(cols, headers, 'nama pengurus') || '').trim(),
+                    status: (colVal(cols, headers, 'status tanah') || colVal(cols, headers, 'status') || '').trim()
+                });
+            }
+            if (rows.length === 0) {
+                container.innerHTML = '<div class="text-center p-4"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data.</p></div>';
+                return;
+            }
+            var html = '<div style="display:flex;flex-direction:column;gap:1px;background:rgba(0,0,0,0.04);border-radius:14px;overflow:hidden;">';
+            rows.forEach(function(item) {
+                html += '<div style="padding:14px 16px;background:#fff;">';
+                html += '<p style="font-weight:600;font-size:0.88rem;margin-bottom:3px;color:var(--text);">' + _esc(item.nama) + '</p>';
+                if (item.alamat) html += '<p style="font-size:0.76rem;color:#64748b;">📍 ' + _esc(item.alamat) + '</p>';
+                if (item.pengurus) html += '<p style="font-size:0.72rem;color:#94a3b8;">👤 ' + _esc(item.pengurus) + '</p>';
+                if (item.status) html += '<p style="font-size:0.72rem;color:#059669;">✓ ' + _esc(item.status) + '</p>';
+                html += '</div>';
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        })
+        .catch(function() {
+            container.innerHTML = '<div class="text-center text-muted p-3"><p style="font-size:0.85rem;color:#ef4444;">Gagal memuat data.</p></div>';
+        });
+};
+
+window.filterMasjid = function() {
+    var query = (document.getElementById('masjidSearchInput').value || '').toLowerCase().trim();
+    loadMasjidTab(_masjidCurrentTab);
+    if (!query) return;
+    setTimeout(function() {
+        var container = document.getElementById('masjidMusholaPublikContent');
+        var items = container.querySelectorAll('[style*="background:#fff"]');
+        items.forEach(function(el) {
+            var text = el.textContent.toLowerCase();
+            el.style.display = text.includes(query) ? '' : 'none';
+        });
+    }, 1500);
 };
 
 window.loadKeagamaanPublik = function(tipe, contentId, tabsId) {
@@ -643,8 +737,8 @@ window.loadKeagamaanPublik = function(tipe, contentId, tabsId) {
 };
 
 window.filterKeagamaanSheet = function(tipe) {
-    var searchId = { masjid: 'masjidSearchInput', tpq: 'tpqSearchInput', madin: 'madinSearchInput', wakaf: 'wakafSearchInput' };
-    var contentId = { masjid: 'masjidMusholaPublikContent', tpq: 'tpqPublikContent', madin: 'madinPublikContent', wakaf: 'wakafPublikContent' };
+    var searchId = { tpq: 'tpqSearchInput', madin: 'madinSearchInput', wakaf: 'wakafSearchInput' };
+    var contentId = { tpq: 'tpqPublikContent', madin: 'madinPublikContent', wakaf: 'wakafPublikContent' };
     var query = (document.getElementById(searchId[tipe]).value || '').toLowerCase().trim();
     var data = _keagamaanData[tipe] || [];
     if (!query) {
