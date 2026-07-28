@@ -582,3 +582,152 @@ function escapeHtmlKeagamaan(text) {
 }
 
 
+// ════════════════════════════════
+// DATA PERNIKAHAN (GOOGLE SHEETS)
+// ════════════════════════════════
+const NIKAH_SHEET_ID = '1FBSExmCnLfXzgZKAoeSt3BClZwIepMm3lb-liqRa6-g';
+const NIKAH_YEARS = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024];
+let _nikahAllData = [];
+let _nikahCurrentYear = 2024;
+
+window.bukaModalNikah = function() {
+    document.getElementById('nikahModal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+    renderNikahTabs();
+    loadNikahYear(2024);
+};
+
+window.tutupModalNikah = function() {
+    document.getElementById('nikahModal').classList.remove('show');
+    document.body.style.overflow = '';
+    _nikahAllData = [];
+    document.getElementById('nikahSearchInput').value = '';
+};
+
+function renderNikahTabs() {
+    const container = document.getElementById('nikahTabs');
+    let html = '';
+    NIKAH_YEARS.slice().reverse().forEach(year => {
+        html += '<button onclick="loadNikahYear(' + year + ')" id="nTab' + year + '" class="nikah-tab">' + year + '</button>';
+    });
+    container.innerHTML = html;
+}
+
+function loadNikahYear(year) {
+    _nikahCurrentYear = year;
+    _nikahAllData = [];
+    document.querySelectorAll('.nikah-tab').forEach(t => t.classList.toggle('active', t.id === 'nTab' + year));
+    document.getElementById('nikahSearchInput').value = '';
+
+    var container = document.getElementById('nikahPublikContent');
+    container.innerHTML = '<div class="text-center text-muted p-4"><div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>Memuat data tahun ' + year + '...</div>';
+
+    var sheetName = year === 2008 ? '2008' : String(year);
+    var url = 'https://docs.google.com/spreadsheets/d/' + NIKAH_SHEET_ID + '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent(sheetName);
+
+    fetch(url)
+        .then(function(r) {
+            if (!r.ok) throw new Error('Sheet not found');
+            return r.text();
+        })
+        .then(function(csv) {
+            var rows = parseNikahCSV(csv);
+            if (rows.length === 0) {
+                container.innerHTML = '<div class="text-center p-4"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data untuk tahun ' + year + '.</p></div>';
+                return;
+            }
+            _nikahAllData = rows;
+            renderNikahList(rows, container);
+        })
+        .catch(function() {
+            container.innerHTML = '<div class="text-center p-4"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data untuk tahun ' + year + '.</p></div>';
+        });
+}
+
+function parseNikahCSV(csv) {
+    var lines = csv.split('\n');
+    if (lines.length < 2) return [];
+    var headers = lines[0].split(',').map(function(h) { return h.replace(/"/g, '').trim().toLowerCase(); });
+
+    var idxNo = -1, idxSuami = -1, idxIstri = -1, idxTempat = -1, idxTanggal = -1, idxRegister = -1;
+    headers.forEach(function(h, i) {
+        if (h === 'no' || h === 'no.') idxNo = i;
+        if (h.includes('nama suami') || h === 'nama suami') idxSuami = i;
+        if (h.includes('nama istri') || h === 'nama istri') idxIstri = i;
+        if (h === 'desa' || h === 'tempat nikah' || h.includes('tempat')) idxTempat = i;
+        if (h.includes('tanggal')) idxTanggal = i;
+        if (h.includes('register') || h.includes('no register')) idxRegister = i;
+    });
+
+    var rows = [];
+    for (var i = 1; i < lines.length; i++) {
+        var cols = lines[i].split(',');
+        if (cols.length < 3) continue;
+        var suami = (idxSuami >= 0 && cols[idxSuami]) ? cols[idxSuami].replace(/"/g, '').trim() : '';
+        var istri = (idxIstri >= 0 && cols[idxIstri]) ? cols[idxIstri].replace(/"/g, '').trim() : '';
+        if (!suami && !istri) continue;
+
+        var tanggal = (idxTanggal >= 0 && cols[idxTanggal]) ? cols[idxTanggal].replace(/"/g, '').trim() : '';
+        var tanggalParsed = parseNikahDate(tanggal);
+
+        rows.push({
+            suami: suami,
+            istri: istri,
+            tempat: (idxTempat >= 0 && cols[idxTempat]) ? cols[idxTempat].replace(/"/g, '').trim() : '',
+            tanggal: tanggal,
+            tanggalParsed: tanggalParsed,
+            register: (idxRegister >= 0 && cols[idxRegister]) ? cols[idxRegister].replace(/"/g, '').trim() : ''
+        });
+    }
+    rows.sort(function(a, b) { return b.tanggalParsed - a.tanggalParsed; });
+    return rows;
+}
+
+function parseNikahDate(str) {
+    if (!str) return 0;
+    var d = new Date(str);
+    if (!isNaN(d.getTime())) return d.getTime();
+    var parts = str.split(/[-/\.]/);
+    if (parts.length === 3) {
+        var dd = parseInt(parts[0]), mm = parseInt(parts[1]), yyyy = parseInt(parts[2]);
+        if (yyyy < 100) yyyy += 2000;
+        var d2 = new Date(yyyy, mm - 1, dd);
+        if (!isNaN(d2.getTime())) return d2.getTime();
+    }
+    return 0;
+}
+
+function renderNikahList(rows, container) {
+    var html = '<div style="display:flex;flex-direction:column;gap:1px;background:rgba(0,0,0,0.04);border-radius:14px;overflow:hidden;">';
+    rows.forEach(function(item) {
+        html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:#fff;">';
+        html += '<div style="flex:1;min-width:0;">';
+        html += '<p style="font-weight:600;font-size:0.88rem;margin-bottom:2px;color:var(--text);">' + _esc(item.suami) + ' & ' + _esc(item.istri) + '</p>';
+        if (item.tempat) {
+            html += '<p style="font-size:0.76rem;color:#64748b;">' + _esc(item.tempat) + '</p>';
+        }
+        if (item.tanggal) {
+            html += '<p style="font-size:0.76rem;color:#94a3b8;">' + _esc(item.tanggal) + '</p>';
+        }
+        if (item.register) {
+            html += '<p style="font-size:0.72rem;color:#94a3b8;">Reg: ' + _esc(item.register) + '</p>';
+        }
+        html += '</div></div>';
+    });
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+window.filterNikahData = function() {
+    var query = (document.getElementById('nikahSearchInput').value || '').toLowerCase().trim();
+    if (!query) {
+        renderNikahList(_nikahAllData, document.getElementById('nikahPublikContent'));
+        return;
+    }
+    var filtered = _nikahAllData.filter(function(item) {
+        return item.suami.toLowerCase().includes(query) || item.istri.toLowerCase().includes(query);
+    });
+    renderNikahList(filtered, document.getElementById('nikahPublikContent'));
+};
+
+

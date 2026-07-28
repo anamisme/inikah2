@@ -924,3 +924,62 @@ body.dark-mode .keagamaan-publik-tab.active {
         0 8px 16px rgba(6, 78, 59, 0.12),
         inset 0 1px 2px rgba(255, 255, 255, 1);
 }
+
+/* ICON PERNIKAHAN */
+.icon-nikah {
+    background: linear-gradient(145deg, #f43f5e, #e11d48);
+    color: #fff;
+    border-radius: 14px;
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+body.dark-mode .icon-nikah {
+    background: linear-gradient(145deg, #f43f5e, #be123c);
+}
+
+/* NIKAH TABS */
+.nikah-tab {
+    flex: 0 0 auto;
+    padding: 10px 18px;
+    border-radius: 14px;
+    border: 1.5px solid transparent;
+    background:
+        linear-gradient(145deg, #ffffff 0%, #f8fafc 100%) padding-box,
+        linear-gradient(135deg, rgba(244, 63, 94, 0.2) 0%, rgba(244, 63, 94, 0.04) 100%) border-box;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    color: #64748b;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+}
+.nikah-tab.active {
+    background:
+        linear-gradient(145deg, #fff1f2 0%, #ffe4e6 100%) padding-box,
+        linear-gradient(135deg, rgba(244, 63, 94, 0.8) 0%, rgba(225, 29, 72, 0.3) 100%) border-box;
+    color: #e11d48;
+}
+body.dark-mode .nikah-tab {
+    background:
+        linear-gradient(145deg, #1e293b 0%, #0f172a 100%) padding-box,
+        linear-gradient(135deg, rgba(244, 63, 94, 0.1) 0%, rgba(244, 63, 94, 0.02) 100%) border-box;
+    color: #94a3b8;
+}
+body.dark-mode .nikah-tab.active {
+    background:
+        linear-gradient(145deg, #fff1f2 0%, #ffe4e6 100%) padding-box,
+        linear-gradient(135deg, rgba(244, 63, 94, 0.8) 0%, rgba(225, 29, 72, 0.3) 100%) border-box;
+    color: #e11d48;
+}
+
+/* Dark mode nikah search input */
+body.dark-mode #nikahSearchInput {
+    background: #1e293b;
+    border-color: rgba(244, 63, 94, 0.15);
+    color: #f1f5f9;
+}
+body.dark-mode #nikahSearchInput::placeholder {
+    color: #475569;
+}

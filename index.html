@@ -104,6 +104,35 @@
         </div>
     </div>
 
+    <!-- MODAL DATA PERNIKAHAN -->
+    <div id="nikahModal" class="app-modal-overlay">
+        <div class="app-modal-content" style="height: auto; max-height: 85vh; max-height: 85dvh; overflow-y: auto;">
+            <button class="app-modal-close" onclick="tutupModalNikah()" title="Tutup">
+                <span class="material-icons-outlined">close</span>
+            </button>
+            <h3 class="app-modal-title">
+                <span class="material-icons-outlined" style="font-size:22px;color:#0f766e;margin-right:6px;vertical-align:middle;">favorite</span>
+                Data Pernikahan
+            </h3>
+            <div style="padding:16px;">
+                <p class="text-muted small mb-3">Daftar data pernikahan KUA Karangdadap.</p>
+
+                <div style="margin-bottom:12px;">
+                    <input type="text" id="nikahSearchInput" placeholder="Cari nama suami / istri..." oninput="filterNikahData()" style="width:100%;padding:12px 16px;border-radius:12px;border:1.5px solid rgba(15,118,110,0.08);font-size:0.85rem;outline:none;background:#fff;">
+                </div>
+
+                <div style="display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;" id="nikahTabs"></div>
+
+                <div id="nikahPublikContent">
+                    <div class="text-center text-muted p-4">
+                        <div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>
+                        Memuat data...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL DATA KEAGAMAAN -->
     <div id="keagamaanModal" class="app-modal-overlay">
         <div class="app-modal-content" style="height: auto; max-height: 85vh; max-height: 85dvh; overflow-y: auto;">
@@ -353,6 +382,22 @@
                 </div>
             </div>
 
+            <!-- CARD: DATA PERNIKAHAN -->
+            <div class="ios-main-card" onclick="event.stopPropagation(); bukaModalNikah()" style="cursor:pointer;">
+                <div class="ios-card-header">
+                    <div class="ios-card-icon-title">
+                        <div class="ios-card-icon icon-nikah">
+                            <span class="material-icons-outlined" style="font-size:24px;">favorite</span>
+                        </div>
+                        <div>
+                            <h2 class="ios-card-title">Data Pernikahan</h2>
+                            <span class="ios-card-desc">Daftar data pernikahan KUA Karangdadap</span>
+                        </div>
+                    </div>
+                    <span class="material-icons-outlined chevron-main">chevron_right</span>
+                </div>
+            </div>
+
             <!-- CARD 3: DOKUMEN & BANTUAN -->
             <div class="ios-main-card" onclick="toggleMainMenu('bantuanSubmenu','bantuanChevron')">
                 <div class="ios-card-header">
@@ -413,7 +458,7 @@
 
     </div>
 
-    <script src="script.js?v=5"></script>
+    <script src="script.js?v=6"></script>
 </body>
 </html>
 
