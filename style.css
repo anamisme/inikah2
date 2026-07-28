@@ -877,11 +877,11 @@ body.dark-mode .ios-list-main-title {
 /* KEAGAMAAN TABS */
 .keagamaan-publik-tab {
     flex: 0 0 auto;
-    padding: 10px 20px;
+    padding: 8px 22px;
     border-radius: 50px;
     border: 1.5px solid rgba(15, 118, 110, 0.2);
     background: #fff;
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     font-weight: 600;
     cursor: pointer;
     text-align: center;
@@ -889,6 +889,8 @@ body.dark-mode .ios-list-main-title {
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
     white-space: nowrap;
+    min-height: 34px;
+    line-height: 1.2;
 }
 .keagamaan-publik-tab.active {
     background: linear-gradient(135deg, #0f766e 0%, #065f46 100%);
