@@ -662,9 +662,7 @@ window.loadMasjidTab = function(sheetName) {
                 if (!nama) continue;
                 rows.push({
                     nama: nama,
-                    alamat: (colVal(cols, headers, 'alamat') || '').trim(),
-                    pengurus: (colVal(cols, headers, 'nama pengurus') || colVal(cols, headers, 'nama pengurus') || '').trim(),
-                    status: (colVal(cols, headers, 'status tanah') || colVal(cols, headers, 'status') || '').trim()
+                    alamat: (colVal(cols, headers, 'alamat') || '').trim()
                 });
             }
             if (rows.length === 0) {
@@ -676,8 +674,6 @@ window.loadMasjidTab = function(sheetName) {
                 html += '<div style="padding:14px 16px;background:#fff;">';
                 html += '<p style="font-weight:600;font-size:0.88rem;margin-bottom:3px;color:var(--text);">' + _esc(item.nama) + '</p>';
                 if (item.alamat) html += '<p style="font-size:0.76rem;color:#64748b;">📍 ' + _esc(item.alamat) + '</p>';
-                if (item.pengurus) html += '<p style="font-size:0.72rem;color:#94a3b8;">👤 ' + _esc(item.pengurus) + '</p>';
-                if (item.status) html += '<p style="font-size:0.72rem;color:#059669;">✓ ' + _esc(item.status) + '</p>';
                 html += '</div>';
             });
             html += '</div>';
