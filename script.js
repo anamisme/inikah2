@@ -565,19 +565,20 @@ window.loadPondasiData = function() {
                     container.innerHTML = '<div class="text-center p-4"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data calon pengantin.</p></div>';
                     return;
                 }
-                var html = '<div style="display:flex;flex-direction:column;gap:12px;">';
-                data.forEach(function(item) {
-                    html += '<div style="background:#fff;border-radius:14px;padding:14px 16px;border:1px solid rgba(15,118,110,0.08);">';
-                    if (item.foto) {
-                        html += '<img src="' + _esc(item.foto) + '" onclick="openFotoLightbox(this.src)" style="width:100%;max-height:220px;object-fit:cover;border-radius:10px;margin-bottom:12px;cursor:pointer;border:1px solid rgba(0,0,0,0.06);" alt="Foto">';
-                    }
-                    html += '<p style="font-size:0.9rem;font-weight:700;margin-bottom:4px;">' + _esc(item.nama_pria) + ' & ' + _esc(item.nama_wanita) + '</p>';
-                    if (item.alamat) {
-                        html += '<p style="font-size:0.78rem;color:#64748b;">📍 Alamat: ' + _esc(item.alamat) + '</p>';
-                    }
-                    html += '</div>';
-                });
-                html += '</div>';
+            var html = '<div style="display:flex;flex-direction:column;gap:12px;">';
+            data.forEach(function(item) {
+                html += '<div style="display:flex;align-items:start;gap:14px;background:#fff;border-radius:14px;padding:14px 16px;border:1px solid rgba(15,118,110,0.08);">';
+                if (item.foto) {
+                    html += '<img src="' + _esc(item.foto) + '" onclick="openFotoLightbox(this.src)" style="width:72px;height:72px;border-radius:10px;object-fit:cover;cursor:pointer;border:1px solid rgba(0,0,0,0.06);flex-shrink:0;" alt="Foto">';
+                }
+                html += '<div style="flex:1;min-width:0;">';
+                html += '<p style="font-size:0.9rem;font-weight:700;margin-bottom:4px;">' + _esc(item.nama_pria) + ' & ' + _esc(item.nama_wanita) + '</p>';
+                if (item.alamat) {
+                    html += '<p style="font-size:0.78rem;color:#64748b;">📍 Alamat: ' + _esc(item.alamat) + '</p>';
+                }
+                html += '</div></div>';
+            });
+            html += '</div>';
                 container.innerHTML = html;
             })
             .catch(function(err) {
