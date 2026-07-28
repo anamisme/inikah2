@@ -167,9 +167,8 @@
             </h3>
             <div style="padding:16px;">
                 <p class="text-muted small mb-3">Daftar masjid dan musholla di wilayah KUA Karangdadap.</p>
-                <div style="display:flex;gap:8px;margin-bottom:16px;" id="masjidMusholaTabs">
-                    <button onclick="loadKeagamaanPublik('masjid','masjidMusholaPublikContent','masjidMusholaTabs')" class="keagamaan-publik-tab active" data-tab="masjid">Masjid</button>
-                    <button onclick="loadKeagamaanPublik('musholla','masjidMusholaPublikContent','masjidMusholaTabs')" class="keagamaan-publik-tab" data-tab="musholla">Musholla</button>
+                <div style="margin-bottom:12px;">
+                    <input type="text" id="masjidSearchInput" placeholder="Cari nama masjid / mushola..." oninput="filterKeagamaanSheet('masjid')" style="width:100%;padding:12px 16px;border-radius:12px;border:1.5px solid rgba(15,118,110,0.08);font-size:0.85rem;outline:none;background:#fff;">
                 </div>
                 <div id="masjidMusholaPublikContent">
                     <div class="text-center text-muted p-4">
@@ -193,6 +192,9 @@
             </h3>
             <div style="padding:16px;">
                 <p class="text-muted small mb-3">Daftar tanah wakaf di wilayah KUA Karangdadap.</p>
+                <div style="margin-bottom:12px;">
+                    <input type="text" id="wakafSearchInput" placeholder="Cari nama desa / lokasi..." oninput="filterKeagamaanSheet('wakaf')" style="width:100%;padding:12px 16px;border-radius:12px;border:1.5px solid rgba(15,118,110,0.08);font-size:0.85rem;outline:none;background:#fff;">
+                </div>
                 <div id="wakafPublikContent">
                     <div class="text-center text-muted p-4">
                         <div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>
@@ -215,6 +217,9 @@
             </h3>
             <div style="padding:16px;">
                 <p class="text-muted small mb-3">Daftar Taman Pendidikan Al-Qur'an di wilayah KUA Karangdadap.</p>
+                <div style="margin-bottom:12px;">
+                    <input type="text" id="tpqSearchInput" placeholder="Cari nama TPQ..." oninput="filterKeagamaanSheet('tpq')" style="width:100%;padding:12px 16px;border-radius:12px;border:1.5px solid rgba(15,118,110,0.08);font-size:0.85rem;outline:none;background:#fff;">
+                </div>
                 <div id="tpqPublikContent">
                     <div class="text-center text-muted p-4">
                         <div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>
@@ -237,6 +242,9 @@
             </h3>
             <div style="padding:16px;">
                 <p class="text-muted small mb-3">Daftar Madrasah Diniyah di wilayah KUA Karangdadap.</p>
+                <div style="margin-bottom:12px;">
+                    <input type="text" id="madinSearchInput" placeholder="Cari nama madin..." oninput="filterKeagamaanSheet('madin')" style="width:100%;padding:12px 16px;border-radius:12px;border:1.5px solid rgba(15,118,110,0.08);font-size:0.85rem;outline:none;background:#fff;">
+                </div>
                 <div id="madinPublikContent">
                     <div class="text-center text-muted p-4">
                         <div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>
@@ -482,7 +490,7 @@
                 <div class="ios-submenu-wrapper" id="keagamaanSubmenu">
                     <div class="ios-submenu-inner" onclick="event.stopPropagation()">
 
-                        <div onclick="event.stopPropagation(); bukaModalKeagamaanTarget('masjidMusholaModal','masjid','masjidMusholaPublikContent','masjidMusholaTabs')" class="sub-list-item" style="cursor:pointer;">
+                        <div onclick="event.stopPropagation(); bukaModalKeagamaanTarget('masjidMusholaModal','masjid','masjidMusholaPublikContent',null)" class="sub-list-item" style="cursor:pointer;">
                             <div class="sub-list-left">
                                 <div class="sub-badge badge-icon">
                                     <span class="material-icons-outlined" style="font-size:16px;">account_balance</span>
@@ -614,7 +622,7 @@
 
     </div>
 
-    <script src="script.js?v=8"></script>
+    <script src="script.js?v=9"></script>
 </body>
 </html>
 

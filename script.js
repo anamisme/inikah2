@@ -582,7 +582,15 @@ function loadPondasiData() {
         });
 }
 
-// ===== DATA KEAGAMAAN =====
+// ===== DATA KEAGAMAAN (GOOGLE SHEETS) =====
+const KEAGAMAAN_SHEETS = {
+    masjid:  '1nVmxypaABxf0IrUY7DKa3Z6MA3SFLSIJ',
+    tpq:     '1sgstI0bnvw6OGdqENQON2lhUun5agfWi5PgdT_o6gVI',
+    madin:   '1t_ojSS6B-wXKC3uI4MSWhC_HENrwa1HnzTkjbbzQePk',
+    wakaf:   '14Hkdpz55zO_qSmCBpJFeH0yHZOIoXvFS'
+};
+let _keagamaanData = {};
+
 window.bukaModalKeagamaanTarget = function(modalId, tipe, contentId, tabsId) {
     var modal = document.getElementById(modalId);
     if (modal) {
@@ -611,35 +619,123 @@ window.loadKeagamaanPublik = function(tipe, contentId, tabsId) {
         });
     }
 
-    fetch('api/keagamaan-api.php?action=get&tipe=' + encodeURIComponent(tipe))
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-            if (!data || data.length === 0) {
-                var labels = { masjid: 'masjid', musholla: 'musholla', tpq: 'TPQ', wakaf: 'tanah wakaf', madin: 'Madin' };
-                container.innerHTML = '<div class="text-center p-4"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data ' + (labels[tipe] || tipe) + '.</p></div>';
+    var sheetId = KEAGAMAAN_SHEETS[tipe];
+    if (!sheetId) {
+        container.innerHTML = '<div class="text-center text-muted p-3"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data.</p></div>';
+        return;
+    }
+
+    var url = 'https://docs.google.com/spreadsheets/d/' + sheetId + '/gviz/tq?tqx=out:csv';
+    fetch(url)
+        .then(function(r) { return r.text(); })
+        .then(function(csv) {
+            var rows = parseKeagamaanCSV(csv, tipe);
+            _keagamaanData[tipe] = rows;
+            if (rows.length === 0) {
+                container.innerHTML = '<div class="text-center p-4"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data.</p></div>';
                 return;
             }
-            var html = '<div style="display:flex;flex-direction:column;gap:1px;background:rgba(0,0,0,0.04);border-radius:14px;overflow:hidden;">';
-            data.forEach(function(item) {
-                html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:#fff;">';
-                html += '<div style="flex:1;min-width:0;">';
-                html += '<p style="font-weight:600;font-size:0.88rem;margin-bottom:2px;color:var(--text);">' + escapeHtmlKeagamaan(item.nama) + '</p>';
-                html += '<p style="font-size:0.76rem;color:#64748b;">' + escapeHtmlKeagamaan(item.desa) + '</p>';
-                html += '</div>';
-                html += '</div>';
-            });
-            html += '</div>';
-            container.innerHTML = html;
+            renderKeagamaanList(rows, tipe, container);
         })
         .catch(function() {
             container.innerHTML = '<div class="text-center text-muted p-3"><p style="font-size:0.85rem;color:#ef4444;">Gagal memuat data.</p></div>';
         });
 };
 
-function escapeHtmlKeagamaan(text) {
-    var d = document.createElement('div');
-    d.textContent = text || '';
-    return d.innerHTML;
+window.filterKeagamaanSheet = function(tipe) {
+    var searchId = { masjid: 'masjidSearchInput', tpq: 'tpqSearchInput', madin: 'madinSearchInput', wakaf: 'wakafSearchInput' };
+    var contentId = { masjid: 'masjidMusholaPublikContent', tpq: 'tpqPublikContent', madin: 'madinPublikContent', wakaf: 'wakafPublikContent' };
+    var query = (document.getElementById(searchId[tipe]).value || '').toLowerCase().trim();
+    var data = _keagamaanData[tipe] || [];
+    if (!query) {
+        renderKeagamaanList(data, tipe, document.getElementById(contentId[tipe]));
+        return;
+    }
+    var filtered = data.filter(function(item) {
+        var text = Object.values(item).join(' ').toLowerCase();
+        return text.includes(query);
+    });
+    renderKeagamaanList(filtered, tipe, document.getElementById(contentId[tipe]));
+};
+
+function parseKeagamaanCSV(csv, tipe) {
+    var lines = csv.split('\n');
+    if (lines.length < 2) return [];
+    var headers = lines[0].split(',').map(function(h) { return h.replace(/"/g, '').trim().toLowerCase(); });
+
+    var rows = [];
+    for (var i = 1; i < lines.length; i++) {
+        var cols = lines[i].split(',');
+        if (cols.length < 2) continue;
+
+        var item = {};
+        if (tipe === 'masjid') {
+            item.nama = colVal(cols, headers, 'nama masjid/musholah') || colVal(cols, headers, 'nama');
+            item.alamat = colVal(cols, headers, 'alamat') || '';
+            if (!item.nama) continue;
+            rows.push(item);
+        } else if (tipe === 'tpq') {
+            item.nama = colVal(cols, headers, 'nama lembaga') || '';
+            item.statistik = colVal(cols, headers, 'nomor statistik') || '';
+            item.alamat = colVal(cols, headers, 'alamat') || '';
+            item.desa = colVal(cols, headers, 'desa/kelurahan') || '';
+            if (!item.nama) continue;
+            rows.push(item);
+        } else if (tipe === 'madin') {
+            item.nama = colVal(cols, headers, 'nama lembaga') || '';
+            item.jenjang = colVal(cols, headers, 'jenjang') || '';
+            item.statistik = colVal(cols, headers, 'nomor statistik') || '';
+            item.alamat = colVal(cols, headers, 'alamat') || '';
+            if (!item.nama) continue;
+            rows.push(item);
+        } else if (tipe === 'wakaf') {
+            item.desa = colVal(cols, headers, 'kelurahan') || '';
+            item.luas = colVal(cols, headers, 'luas') || '';
+            item.alamat = colVal(cols, headers, 'alamat/lokasi') || '';
+            item.aiw = colVal(cols, headers, 'no aiw') || '';
+            item.sertifikat = colVal(cols, headers, 'no sertifikat') || '';
+            item.nadzir = colVal(cols, headers, 'nama nadzir') || '';
+            if (!item.desa && !item.alamat) continue;
+            rows.push(item);
+        }
+    }
+    return rows;
+}
+
+function colVal(cols, headers, name) {
+    var idx = headers.indexOf(name);
+    if (idx < 0) return '';
+    return (cols[idx] || '').replace(/"/g, '').trim();
+}
+
+function renderKeagamaanList(rows, tipe, container) {
+    var html = '<div style="display:flex;flex-direction:column;gap:1px;background:rgba(0,0,0,0.04);border-radius:14px;overflow:hidden;">';
+    rows.forEach(function(item) {
+        html += '<div style="padding:14px 16px;background:#fff;">';
+        html += '<p style="font-weight:600;font-size:0.88rem;margin-bottom:4px;color:var(--text);">' + _esc(item.nama || item.desa) + '</p>';
+
+        if (tipe === 'masjid') {
+            if (item.alamat) html += '<p style="font-size:0.76rem;color:#64748b;">📍 ' + _esc(item.alamat) + '</p>';
+        } else if (tipe === 'tpq') {
+            if (item.statistik) html += '<p style="font-size:0.76rem;color:#94a3b8;">No. Statistik: ' + _esc(item.statistik) + '</p>';
+            if (item.alamat) html += '<p style="font-size:0.76rem;color:#64748b;">📍 ' + _esc(item.alamat) + '</p>';
+            if (item.desa) html += '<p style="font-size:0.72rem;color:#94a3b8;">' + _esc(item.desa) + '</p>';
+        } else if (tipe === 'madin') {
+            if (item.jenjang) html += '<p style="font-size:0.76rem;color:#94a3b8;">Jenjang: ' + _esc(item.jenjang) + '</p>';
+            if (item.statistik) html += '<p style="font-size:0.76rem;color:#94a3b8;">No. Statistik: ' + _esc(item.statistik) + '</p>';
+            if (item.alamat) html += '<p style="font-size:0.76rem;color:#64748b;">📍 ' + _esc(item.alamat) + '</p>';
+        } else if (tipe === 'wakaf') {
+            if (item.luas) html += '<p style="font-size:0.76rem;color:#64748b;">Luas: ' + _esc(item.luas) + '</p>';
+            if (item.alamat) html += '<p style="font-size:0.76rem;color:#64748b;">📍 ' + _esc(item.alamat) + '</p>';
+            if (item.aiw) html += '<p style="font-size:0.72rem;color:#94a3b8;">AIW: ' + _esc(item.aiw) + '</p>';
+            if (item.sertifikat) html += '<p style="font-size:0.72rem;color:#94a3b8;">Sertifikat: ' + _esc(item.sertifikat) + '</p>';
+            if (item.nadzir) html += '<p style="font-size:0.72rem;color:#94a3b8;">Nadzir: ' + _esc(item.nadzir) + '</p>';
+        }
+
+        html += '</div>';
+    });
+    html += '</div>';
+    container.innerHTML = html;
 }
 
 
@@ -764,9 +860,6 @@ function renderNikahList(rows, container) {
         html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:#fff;">';
         html += '<div style="flex:1;min-width:0;">';
         html += '<p style="font-weight:600;font-size:0.88rem;margin-bottom:2px;color:var(--text);">' + _esc(item.suami) + ' & ' + _esc(item.istri) + '</p>';
-        if (item.tempat) {
-            html += '<p style="font-size:0.76rem;color:#64748b;">' + _esc(item.tempat) + '</p>';
-        }
         if (item.tanggal) {
             html += '<p style="font-size:0.76rem;color:#94a3b8;">' + _esc(item.tanggal) + '</p>';
         }
