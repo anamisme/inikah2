@@ -225,34 +225,39 @@
             </div>
         </div>
 
-        <!-- PONDASI SAKINAH -->
+        <!-- FORM PONDASI SAKINAH -->
+        <div class="card">
+            <h3>💍 Pondasi Sakinah</h3>
+            <div class="note">⚠️ DATA INI DIISI KHUSUS OLEH PETUGAS KUA KARANGDADAP</div>
+
+            <div class="form-group">
+                <label>Nama Calon Pengantin Laki-Laki</label>
+                <input type="text" id="pondasiPria" required>
+            </div>
+            <div class="form-group">
+                <label>Nama Calon Pengantin Perempuan</label>
+                <input type="text" id="pondasiWanita" required>
+            </div>
+            <div class="form-group">
+                <label>Alamat</label>
+                <input type="text" id="pondasiAlamat" placeholder="Contoh: Desa Karangdadap" required>
+            </div>
+            <div class="form-group">
+                <label>Foto</label>
+                <input type="file" id="pondasiFoto" accept="image/*" required>
+            </div>
+            <button onclick="submitPondasi()" id="btnPondasi" class="btn-submit">Simpan Data</button>
+            <p id="pondasiStatus" class="status-msg"></p>
+        </div>
+
+        <!-- DAFTAR PONDASI SAKINAH -->
         <div class="accordion" id="accPondasi">
             <div class="accordion-header" onclick="toggleAccordion('accPondasi')">
-                <h3>💍 Pondasi Sakinah</h3>
+                <h3>📋 Daftar Pondasi Sakinah</h3>
                 <span class="arrow">▾</span>
             </div>
             <div class="accordion-body">
                 <div class="accordion-content">
-                    <div class="note" style="margin-bottom:16px;">⚠️ DATA INI DIISI KHUSUS OLEH PETUGAS KUA KARANGDADAP</div>
-                    <div class="form-group">
-                        <label>Nama Calon Pengantin Laki-Laki</label>
-                        <input type="text" id="pondasiPria" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Nama Calon Pengantin Perempuan</label>
-                        <input type="text" id="pondasiWanita" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Alamat</label>
-                        <input type="text" id="pondasiAlamat" placeholder="Contoh: Desa Karangdadap" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Foto</label>
-                        <input type="file" id="pondasiFoto" accept="image/*" required>
-                    </div>
-                    <button onclick="submitPondasi()" id="btnPondasi" class="btn-submit">Simpan Data</button>
-                    <p id="pondasiStatus" class="status-msg"></p>
-                    <h3 style="margin-top:24px;margin-bottom:4px;">📋 Daftar Pondasi Sakinah</h3>
                     <div id="pondasiList" class="data-list">
                         <p style="color:var(--muted);font-size:0.85rem;">Memuat...</p>
                     </div>
