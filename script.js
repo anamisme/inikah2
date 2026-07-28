@@ -604,6 +604,20 @@ const MASJID_DESA_TABS = [
 ];
 let _keagamaanData = {};
 let _masjidCurrentTab = 'DS.KEDUNGKEBO';
+const WAKAF_SHEET_ID = '10FMv0vrJluT1t4ZqPMwGo6afpgGXxXTRYcqAjqih-6I';
+const WAKAF_KELURAHAN_TABS = [
+    { id: 'Kedungkebo', label: 'Kedungkebo' },
+    { id: 'Karangdadap', label: 'Karangdadap' },
+    { id: 'Pangkah', label: 'Pangkah' },
+    { id: 'Jrebengkembang', label: 'Jrebengkembang' },
+    { id: 'Pegandon', label: 'Pegandon' },
+    { id: 'Kebonrowopucang', label: 'Kebonrowopucang' },
+    { id: 'Kalilembu', label: 'Kalilembu' },
+    { id: 'Logandeng', label: 'Logandeng' },
+    { id: 'Pagumenganmas', label: 'Pagumenganmas' },
+    { id: 'Kaligawe', label: 'Kaligawe' }
+];
+let _wakafCurrentTab = 'Kedungkebo';
 
 window.bukaModalKeagamaanTarget = function(modalId, tipe, contentId, tabsId) {
     var modal = document.getElementById(modalId);
@@ -613,6 +627,9 @@ window.bukaModalKeagamaanTarget = function(modalId, tipe, contentId, tabsId) {
         if (tipe === 'masjid') {
             renderMasjidTabs();
             loadMasjidTab('DS.KEDUNGKEBO');
+        } else if (tipe === 'wakaf') {
+            renderWakafTabs();
+            loadWakafTab('Kedungkebo');
         } else {
             loadKeagamaanPublik(tipe, contentId, tabsId);
         }
@@ -698,6 +715,70 @@ window.filterMasjid = function() {
     }, 1500);
 };
 
+function renderWakafTabs() {
+    var container = document.getElementById('wakafKelurahanTabs');
+    if (!container) return;
+    var html = '';
+    WAKAF_KELURAHAN_TABS.forEach(function(tab) {
+        html += '<button onclick="loadWakafTab(\'' + tab.id + '\')" class="keagamaan-publik-tab' + (tab.id === _wakafCurrentTab ? ' active' : '') + '" data-tab="' + tab.id + '">' + tab.label + '</button>';
+    });
+    container.innerHTML = html;
+}
+
+window.loadWakafTab = function(kelurahan) {
+    _wakafCurrentTab = kelurahan;
+    document.querySelectorAll('#wakafKelurahanTabs .keagamaan-publik-tab').forEach(function(btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-tab') === kelurahan);
+    });
+    var container = document.getElementById('wakafPublikContent');
+    container.innerHTML = '<div class="text-center text-muted p-4"><div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>Memuat data...</div>';
+
+    var url = 'https://docs.google.com/spreadsheets/d/' + WAKAF_SHEET_ID + '/gviz/tq?tqx=out:csv&sheet=Tanah%20Wakaf';
+    fetch(url)
+        .then(function(r) { return r.text(); })
+        .then(function(csv) {
+            var lines = parseCSVLines(csv);
+            if (lines.length < 2) {
+                container.innerHTML = '<div class="text-center p-4"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data.</p></div>';
+                return;
+            }
+            var headers = lines[0].map(function(h) { return h.replace(/"/g, '').trim().toLowerCase(); });
+            var rows = [];
+            for (var i = 1; i < lines.length; i++) {
+                var cols = lines[i];
+                var desa = (colVal(cols, headers, 'kelurahan') || '').trim();
+                if (desa.toLowerCase() !== kelurahan.toLowerCase()) continue;
+                var luas = (colVal(cols, headers, 'luas') || '').trim();
+                var alamat = (colVal(cols, headers, 'alamat/lokasi') || '').trim();
+                var aiw = (colVal(cols, headers, 'no aiw') || '').trim();
+                var sertifikat = (colVal(cols, headers, 'no sertifikat') || '').trim();
+                var nadzir = (colVal(cols, headers, 'nama nadzir') || '').trim();
+                if (!alamat && !luas) continue;
+                rows.push({ luas: luas, alamat: alamat, desa: desa, aiw: aiw, sertifikat: sertifikat, nadzir: nadzir });
+            }
+            if (rows.length === 0) {
+                container.innerHTML = '<div class="text-center p-4"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data.</p></div>';
+                return;
+            }
+            var html = '<div style="display:flex;flex-direction:column;gap:1px;background:rgba(0,0,0,0.04);border-radius:14px;overflow:hidden;">';
+            rows.forEach(function(item) {
+                html += '<div style="padding:14px 16px;background:#fff;">';
+                if (item.luas) html += '<p style="font-size:0.76rem;color:#64748b;">Luas: ' + _esc(item.luas) + '</p>';
+                if (item.alamat) html += '<p style="font-size:0.76rem;color:#64748b;">📍 Alamat: ' + _esc(item.alamat) + '</p>';
+                if (item.desa) html += '<p style="font-size:0.76rem;color:#94a3b8;">🏘️ Kelurahan: ' + _esc(item.desa) + '</p>';
+                if (item.aiw) html += '<p style="font-size:0.72rem;color:#94a3b8;">AIW: ' + _esc(item.aiw) + '</p>';
+                if (item.sertifikat) html += '<p style="font-size:0.72rem;color:#94a3b8;">Sertifikat: ' + _esc(item.sertifikat) + '</p>';
+                if (item.nadzir) html += '<p style="font-size:0.72rem;color:#94a3b8;">Nadzir: ' + _esc(item.nadzir) + '</p>';
+                html += '</div>';
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        })
+        .catch(function() {
+            container.innerHTML = '<div class="text-center text-muted p-3"><p style="font-size:0.85rem;color:#ef4444;">Gagal memuat data.</p></div>';
+        });
+};
+
 window.loadKeagamaanPublik = function(tipe, contentId, tabsId) {
     var container = document.getElementById(contentId);
     if (!container) return;
@@ -733,8 +814,8 @@ window.loadKeagamaanPublik = function(tipe, contentId, tabsId) {
 };
 
 window.filterKeagamaanSheet = function(tipe) {
-    var searchId = { tpq: 'tpqSearchInput', madin: 'madinSearchInput', wakaf: 'wakafSearchInput' };
-    var contentId = { tpq: 'tpqPublikContent', madin: 'madinPublikContent', wakaf: 'wakafPublikContent' };
+    var searchId = { tpq: 'tpqSearchInput', madin: 'madinSearchInput' };
+    var contentId = { tpq: 'tpqPublikContent', madin: 'madinPublikContent' };
     var query = (document.getElementById(searchId[tipe]).value || '').toLowerCase().trim();
     var data = _keagamaanData[tipe] || [];
     if (!query) {
@@ -843,13 +924,6 @@ function renderKeagamaanList(rows, tipe, container) {
             if (item.jenjang) html += '<p style="font-size:0.76rem;color:#94a3b8;">Jenjang: ' + _esc(item.jenjang) + '</p>';
             if (item.statistik) html += '<p style="font-size:0.76rem;color:#94a3b8;">No. Statistik: ' + _esc(item.statistik) + '</p>';
             if (item.alamat) html += '<p style="font-size:0.76rem;color:#64748b;">📍 Alamat: ' + _esc(item.alamat) + '</p>';
-        } else if (tipe === 'wakaf') {
-            if (item.luas) html += '<p style="font-size:0.76rem;color:#64748b;">Luas: ' + _esc(item.luas) + '</p>';
-            if (item.alamat) html += '<p style="font-size:0.76rem;color:#64748b;">📍 Alamat: ' + _esc(item.alamat) + '</p>';
-            if (item.desa) html += '<p style="font-size:0.76rem;color:#94a3b8;">🏘️ Kelurahan: ' + _esc(item.desa) + '</p>';
-            if (item.aiw) html += '<p style="font-size:0.72rem;color:#94a3b8;">AIW: ' + _esc(item.aiw) + '</p>';
-            if (item.sertifikat) html += '<p style="font-size:0.72rem;color:#94a3b8;">Sertifikat: ' + _esc(item.sertifikat) + '</p>';
-            if (item.nadzir) html += '<p style="font-size:0.72rem;color:#94a3b8;">Nadzir: ' + _esc(item.nadzir) + '</p>';
         }
 
         html += '</div>';
