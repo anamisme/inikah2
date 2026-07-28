@@ -554,16 +554,25 @@ window.loadKeagamaanPublik = function(tipe) {
         .then(function(r) { return r.json(); })
         .then(function(data) {
             if (!data || data.length === 0) {
-                container.innerHTML = '<div class="text-center text-muted p-3"><p style="font-size:0.85rem;">Belum ada data ' + tipe + '.</p></div>';
+                var icons = { masjid: 'mosque', musholla: 'home_work', tpq: 'school' };
+                var labels = { masjid: 'masjid', musholla: 'musholla', tpq: 'TPQ' };
+                container.innerHTML = '<div class="text-center p-4"><span class="material-icons-outlined" style="font-size:48px;color:#cbd5e1;">' + (icons[tipe] || 'info') + '</span><p style="font-size:0.85rem;color:#94a3b8;margin-top:8px;">Belum ada data ' + labels[tipe] + '.</p></div>';
                 return;
             }
-            var html = '';
-            data.forEach(function(item) {
-                html += '<div style="padding:12px 16px;border-radius:12px;background:#fff;margin-bottom:8px;border:1px solid rgba(15,118,110,0.08);">';
-                html += '<p style="font-weight:700;font-size:0.9rem;margin-bottom:2px;">' + escapeHtmlKeagamaan(item.nama) + '</p>';
-                html += '<p style="font-size:0.78rem;color:#64748b;">📍 ' + escapeHtmlKeagamaan(item.desa) + '</p>';
+            var icons = { masjid: 'mosque', musholla: 'home_work', tpq: 'school' };
+            var colors = { masjid: '#6366f1', musholla: '#14b8a6', tpq: '#f59e0b' };
+            var html = '<div style="display:flex;flex-direction:column;gap:10px;">';
+            data.forEach(function(item, i) {
+                html += '<div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;background:#fff;border:1px solid rgba(99,102,241,0.08);box-shadow:0 1px 3px rgba(0,0,0,0.04);">';
+                html += '<div style="width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,' + colors[tipe] + '22,' + colors[tipe] + '11);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span class="material-icons-outlined" style="font-size:20px;color:' + colors[tipe] + ';">' + (icons[tipe] || 'location_on') + '</span></div>';
+                html += '<div style="flex:1;min-width:0;">';
+                html += '<p style="font-weight:700;font-size:0.88rem;margin-bottom:2px;color:var(--text);">' + escapeHtmlKeagamaan(item.nama) + '</p>';
+                html += '<p style="font-size:0.76rem;color:#64748b;display:flex;align-items:center;gap:4px;"><span class="material-icons-outlined" style="font-size:13px;">location_on</span>' + escapeHtmlKeagamaan(item.desa) + '</p>';
+                html += '</div>';
+                html += '<span style="font-size:0.7rem;color:#94a3b8;background:#f1f5f9;padding:3px 8px;border-radius:8px;font-weight:600;">' + (i + 1) + '</span>';
                 html += '</div>';
             });
+            html += '</div>';
             container.innerHTML = html;
         })
         .catch(function() {
