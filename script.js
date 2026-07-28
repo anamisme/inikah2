@@ -568,9 +568,9 @@ function loadPondasiData() {
                 }
                 html += '<p style="font-size:0.9rem;font-weight:700;margin-bottom:4px;">' + _esc(item.nama_pria) + ' & ' + _esc(item.nama_wanita) + '</p>';
                 if (item.desa) {
-                    html += '<p style="font-size:0.78rem;color:#64748b;">📍 ' + _esc(item.desa) + '</p>';
+                    html += '<p style="font-size:0.78rem;color:#64748b;">📍 Alamat: ' + _esc(item.desa) + '</p>';
                 }
-                html += '<p style="font-size:0.78rem;color:#94a3b8;">📅 ' + _esc(item.tanggal) + ' · ⏰ ' + _esc(item.waktu || '') + '</p>';
+                html += '<p style="font-size:0.78rem;color:#94a3b8;">📅 Tanggal: ' + _esc(item.tanggal) + ' · ⏰ Waktu: ' + _esc(item.waktu || '') + '</p>';
                 html += '<p style="font-size:0.72rem;color:#94a3b8;">👤 Petugas: ' + _esc(item.nama_petugas) + '</p>';
                 html += '</div>';
             });
@@ -835,18 +835,17 @@ function renderKeagamaanList(rows, tipe, container) {
         html += '<p style="font-weight:600;font-size:0.88rem;margin-bottom:4px;color:var(--text);">' + _esc(item.nama || item.desa) + '</p>';
 
         if (tipe === 'masjid') {
-            if (item.alamat) html += '<p style="font-size:0.76rem;color:#64748b;">📍 ' + _esc(item.alamat) + '</p>';
+            if (item.alamat) html += '<p style="font-size:0.76rem;color:#64748b;">📍 Alamat: ' + _esc(item.alamat) + '</p>';
         } else if (tipe === 'tpq') {
             if (item.statistik) html += '<p style="font-size:0.76rem;color:#94a3b8;">No. Statistik: ' + _esc(item.statistik) + '</p>';
-            if (item.alamat) html += '<p style="font-size:0.76rem;color:#64748b;">📍 ' + _esc(item.alamat) + '</p>';
-            if (item.desa) html += '<p style="font-size:0.72rem;color:#94a3b8;">' + _esc(item.desa) + '</p>';
+            if (item.alamat) html += '<p style="font-size:0.76rem;color:#64748b;">📍 Alamat: ' + _esc(item.alamat) + '</p>';
         } else if (tipe === 'madin') {
             if (item.jenjang) html += '<p style="font-size:0.76rem;color:#94a3b8;">Jenjang: ' + _esc(item.jenjang) + '</p>';
             if (item.statistik) html += '<p style="font-size:0.76rem;color:#94a3b8;">No. Statistik: ' + _esc(item.statistik) + '</p>';
-            if (item.alamat) html += '<p style="font-size:0.76rem;color:#64748b;">📍 ' + _esc(item.alamat) + '</p>';
+            if (item.alamat) html += '<p style="font-size:0.76rem;color:#64748b;">📍 Alamat: ' + _esc(item.alamat) + '</p>';
         } else if (tipe === 'wakaf') {
             if (item.luas) html += '<p style="font-size:0.76rem;color:#64748b;">Luas: ' + _esc(item.luas) + '</p>';
-            if (item.alamat) html += '<p style="font-size:0.76rem;color:#64748b;">📍 ' + _esc(item.alamat) + '</p>';
+            if (item.alamat) html += '<p style="font-size:0.76rem;color:#64748b;">📍 Alamat: ' + _esc(item.alamat) + '</p>';
             if (item.aiw) html += '<p style="font-size:0.72rem;color:#94a3b8;">AIW: ' + _esc(item.aiw) + '</p>';
             if (item.sertifikat) html += '<p style="font-size:0.72rem;color:#94a3b8;">Sertifikat: ' + _esc(item.sertifikat) + '</p>';
             if (item.nadzir) html += '<p style="font-size:0.72rem;color:#94a3b8;">Nadzir: ' + _esc(item.nadzir) + '</p>';
@@ -981,10 +980,10 @@ function renderNikahList(rows, container) {
         html += '<div style="flex:1;min-width:0;">';
         html += '<p style="font-weight:600;font-size:0.88rem;margin-bottom:2px;color:var(--text);">' + _esc(item.suami) + ' & ' + _esc(item.istri) + '</p>';
         if (item.tanggal) {
-            html += '<p style="font-size:0.76rem;color:#94a3b8;">' + _esc(item.tanggal) + '</p>';
+            html += '<p style="font-size:0.76rem;color:#94a3b8;">📅 Tanggal: ' + _esc(item.tanggal) + '</p>';
         }
         if (item.register) {
-            html += '<p style="font-size:0.72rem;color:#94a3b8;">Reg: ' + _esc(item.register) + '</p>';
+            html += '<p style="font-size:0.72rem;color:#94a3b8;">📋 Register: ' + _esc(item.register) + '</p>';
         }
         html += '</div></div>';
     });
