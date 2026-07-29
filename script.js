@@ -693,11 +693,11 @@ window.loadMasjidTab = function(sheetName) {
                 container.innerHTML = '<div class="text-center p-4"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data.</p></div>';
                 return;
             }
-            var html = '<div style="display:flex;flex-direction:column;gap:1px;background:rgba(0,0,0,0.04);border-radius:14px;overflow:hidden;">';
+            var html = '<div class="tab-list-content">';
             rows.forEach(function(item) {
-                html += '<div style="padding:14px 16px;background:#fff;">';
-                html += '<p style="font-weight:600;font-size:0.88rem;margin-bottom:3px;color:var(--text);">' + _esc(item.nama) + '</p>';
-                if (item.alamat) html += '<p style="font-size:0.76rem;color:#64748b;">📍 Alamat: ' + _esc(item.alamat) + '</p>';
+                html += '<div class="tab-list-item">';
+                html += '<div class="tab-list-item-name">' + _esc(item.nama) + '</div>';
+                if (item.alamat) html += '<div class="tab-list-item-alamat">📍 Alamat: ' + _esc(item.alamat) + '</div>';
                 html += '</div>';
             });
             html += '</div>';

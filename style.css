@@ -874,34 +874,117 @@ body.dark-mode .ios-list-main-title {
     color: #f1f5f9;
 }
 
-/* KEAGAMAAN TABS */
+/* KEAGAMAAN TABS — Glass Chip Style */
 .keagamaan-publik-tab {
     flex: 0 0 auto;
-    padding: 10px 24px;
+    padding: 8px 22px;
     border-radius: 50px;
-    border: none;
-    background: rgba(15, 118, 110, 0.08);
-    font-size: 0.8rem;
+    border: 1px solid rgba(15, 118, 110, 0.15);
+    background: rgba(255, 255, 255, 0.65);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    font-size: 0.78rem;
     font-weight: 600;
     cursor: pointer;
     text-align: center;
     color: #0f766e;
-    transition: all 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
+    letter-spacing: 0.01em;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+.keagamaan-publik-tab:hover {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(15, 118, 110, 0.25);
+}
+.keagamaan-publik-tab:active {
+    transform: scale(0.96);
 }
 .keagamaan-publik-tab.active {
     background: linear-gradient(135deg, #0f766e 0%, #065f46 100%);
     color: #fff;
-    box-shadow: 0 4px 12px rgba(15, 118, 110, 0.35);
+    border-color: transparent;
+    box-shadow: 0 6px 20px rgba(15, 118, 110, 0.35),
+                0 2px 4px rgba(15, 118, 110, 0.15),
+                inset 0 1px 1px rgba(255,255,255,0.15);
+    transform: translateY(-1px);
 }
+.keagamaan-publik-tab.active:active {
+    transform: translateY(-1px) scale(0.96);
+}
+
 body.dark-mode .keagamaan-publik-tab {
-    background: rgba(20, 184, 166, 0.12);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.1);
     color: #5eead4;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+body.dark-mode .keagamaan-publik-tab:hover {
+    background: rgba(255, 255, 255, 0.14);
 }
 body.dark-mode .keagamaan-publik-tab.active {
     background: linear-gradient(135deg, #14b8a6 0%, #0f766e 100%);
     color: #fff;
-    box-shadow: 0 4px 12px rgba(20, 184, 166, 0.35);
+    border-color: transparent;
+    box-shadow: 0 6px 20px rgba(20, 184, 166, 0.35),
+                0 2px 4px rgba(20, 184, 166, 0.15);
+}
+
+/* GLASS TAB CONTAINER */
+.glass-tab-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+    padding: 10px 12px 14px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    background: linear-gradient(135deg, rgba(15, 118, 110, 0.04), rgba(6, 95, 70, 0.06));
+    border-radius: 18px;
+}
+.glass-tab-container::-webkit-scrollbar {
+    display: none;
+}
+body.dark-mode .glass-tab-container {
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.06), rgba(15, 118, 110, 0.08));
+}
+
+/* TAB LIST CONTENT */
+.tab-list-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: rgba(0,0,0,0.04);
+    border-radius: 16px;
+    overflow: hidden;
+}
+.tab-list-item {
+    padding: 16px 18px;
+    background: #fff;
+    transition: background 0.15s ease;
+}
+.tab-list-item:active {
+    background: #f8fafc;
+}
+.tab-list-item-name {
+    font-weight: 600;
+    font-size: 0.88rem;
+    margin-bottom: 4px;
+    color: var(--text, #1f2937);
+}
+.tab-list-item-alamat {
+    font-size: 0.76rem;
+    color: #64748b;
+    line-height: 1.4;
+}
+body.dark-mode .tab-list-item {
+    background: #1a2e26;
+}
+body.dark-mode .tab-list-item-name {
+    color: #f1f5f9;
 }
 
 /* ICON PERNIKAHAN */
