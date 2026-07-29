@@ -461,6 +461,390 @@ body.dark-mode .banner-dot.active {
 .app-modal-body iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
 
 /* ════════════════════════════════
+   MODAL SPRING ANIMATION
+════════════════════════════════ */
+.app-modal-content {
+    transform: scale(0.95) translateY(20px);
+    transition: opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.app-modal-overlay.show .app-modal-content {
+    transform: scale(1) translateY(0);
+}
+
+/* ════════════════════════════════
+   SKELETON LOADERS
+════════════════════════════════ */
+.skeleton {
+    background: linear-gradient(90deg, #e8ecea 25%, #d6dbd9 50%, #e8ecea 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+}
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+.skeleton-text { height: 1rem; margin-bottom: 8px; }
+.skeleton-text.short { width: 60%; }
+.skeleton-text.long { width: 90%; }
+.skeleton-avatar { width: 56px; height: 56px; border-radius: 12px; flex-shrink: 0; }
+.skeleton-card { padding: 16px; background: #fff; border-radius: 14px; border: 1px solid var(--border); }
+.skeleton-row { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+.skeleton-row:last-child { margin-bottom: 0; }
+.skeleton-content { flex: 1; min-width: 0; }
+
+/* Skeleton variants for specific modals */
+.skeleton-jadwal .skeleton-text { height: 0.9rem; }
+.skeleton-jadwal .skeleton-text.short { width: 70%; }
+.skeleton-petugas .skeleton-avatar { width: 56px; height: 56px; border-radius: 12px; }
+.skeleton-pondasi .skeleton-avatar { width: 72px; height: 72px; border-radius: 10px; }
+.skeleton-keagamaan .skeleton-text { height: 0.88rem; }
+.skeleton-keagamaan .skeleton-text.short { width: 65%; }
+
+/* ════════════════════════════════
+   TAB CONTENT CROSS-FADE
+════════════════════════════════ */
+.tab-list-content,
+#masjidMusholaPublikContent,
+#wakafPublikContent,
+#tpqPublikContent,
+#madinPublikContent,
+#nikahPublikContent,
+#jadwalModalContent,
+#petugasModalContent,
+#pondasiContent {
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.tab-list-content.fading,
+#masjidMusholaPublikContent.fading,
+#wakafPublikContent.fading,
+#tpqPublikContent.fading,
+#madinPublikContent.fading,
+#nikahPublikContent.fading,
+#jadwalModalContent.fading,
+#petugasModalContent.fading,
+#pondasiContent.fading {
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+}
+
+/* ════════════════════════════════
+   EMPTY STATE ILLUSTRATIONS
+════════════════════════════════ */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+}
+.empty-illustration {
+    width: 120px;
+    height: 120px;
+    opacity: 0.35;
+    margin: 0 auto 16px;
+}
+.empty-state h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+}
+.empty-state p {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+/* ════════════════════════════════
+   TOUCH FEEDBACK - UNIVERSAL
+════════════════════════════════ */
+button,
+.sub-list-item,
+.doc-list-item,
+.accordion-header,
+.keagamaan-publik-tab,
+.nikah-tab,
+.book-item,
+.ios-btn-premium,
+.ios-list-item,
+.banner-dot,
+.theme-toggle,
+.notif-bell,
+.app-modal-close,
+.admin-section-header,
+.data-item,
+.btn-hapus {
+    transition: transform 0.1s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+button:active,
+.sub-list-item:active,
+.doc-list-item:active,
+.accordion-header:active,
+.keagamaan-publik-tab:active,
+.nikah-tab:active,
+.book-item:active,
+.ios-btn-premium:active,
+.ios-list-item:active,
+.banner-dot:active,
+.theme-toggle:active,
+.notif-bell:active,
+.app-modal-close:active,
+.admin-section-header:active,
+.data-item:active,
+.btn-hapus:active {
+    transform: scale(0.98);
+}
+
+/* ════════════════════════════════
+   SEARCH INPUT WITH CLEAR BUTTON
+════════════════════════════════ */
+.search-wrapper {
+    position: relative;
+    width: 100%;
+}
+.search-wrapper input {
+    padding-right: 44px !important;
+}
+.search-clear {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, background 0.15s ease;
+}
+.search-wrapper.has-value .search-clear {
+    opacity: 1;
+    pointer-events: auto;
+}
+.search-clear:hover {
+    background: rgba(15, 118, 110, 0.1);
+    color: var(--green-mid);
+}
+.search-clear:active {
+    transform: translateY(-50%) scale(0.9);
+}
+.search-clear .material-icons-outlined {
+    font-size: 18px;
+}
+
+/* ════════════════════════════════
+   DARK MODE SKELETON
+════════════════════════════════ */
+body.dark-mode .skeleton {
+    background: linear-gradient(90deg, #1e2a26 25%, #2a3d36 50%, #1e2a26 75%);
+    background-size: 200% 100%;
+}
+body.dark-mode .skeleton-card {
+    background: #1a2e26;
+    border-color: rgba(255,255,255,0.06);
+}
+
+/* ════════════════════════════════
+   BLANGKO DOCUMENTS
+════════════════════════════════ */
+.app-modal-content {
+    transform: scale(0.95) translateY(20px);
+    transition: opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.app-modal-overlay.show .app-modal-content {
+    transform: scale(1) translateY(0);
+}
+
+/* ════════════════════════════════
+   SKELETON LOADERS
+════════════════════════════════ */
+.skeleton {
+    background: linear-gradient(90deg, #e8ecea 25%, #d6dbd9 50%, #e8ecea 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+}
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+.skeleton-text { height: 1rem; margin-bottom: 8px; }
+.skeleton-text.short { width: 60%; }
+.skeleton-text.long { width: 90%; }
+.skeleton-avatar { width: 56px; height: 56px; border-radius: 12px; flex-shrink: 0; }
+.skeleton-card { padding: 16px; background: #fff; border-radius: 14px; border: 1px solid var(--border); }
+.skeleton-row { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+.skeleton-row:last-child { margin-bottom: 0; }
+.skeleton-content { flex: 1; min-width: 0; }
+
+/* Skeleton variants for specific modals */
+.skeleton-jadwal .skeleton-text { height: 0.9rem; }
+.skeleton-jadwal .skeleton-text.short { width: 70%; }
+.skeleton-petugas .skeleton-avatar { width: 56px; height: 56px; border-radius: 12px; }
+.skeleton-pondasi .skeleton-avatar { width: 72px; height: 72px; border-radius: 10px; }
+.skeleton-keagamaan .skeleton-text { height: 0.88rem; }
+.skeleton-keagamaan .skeleton-text.short { width: 65%; }
+
+/* ════════════════════════════════
+   TAB CONTENT CROSS-FADE
+════════════════════════════════ */
+.tab-list-content,
+#masjidMusholaPublikContent,
+#wakafPublikContent,
+#tpqPublikContent,
+#madinPublikContent,
+#nikahPublikContent,
+#jadwalModalContent,
+#petugasModalContent,
+#pondasiContent {
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.tab-list-content.fading,
+#masjidMusholaPublikContent.fading,
+#wakafPublikContent.fading,
+#tpqPublikContent.fading,
+#madinPublikContent.fading,
+#nikahPublikContent.fading,
+#jadwalModalContent.fading,
+#petugasModalContent.fading,
+#pondasiContent.fading {
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+}
+
+/* ════════════════════════════════
+   EMPTY STATE ILLUSTRATIONS
+════════════════════════════════ */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+}
+.empty-illustration {
+    width: 120px;
+    height: 120px;
+    opacity: 0.35;
+    margin: 0 auto 16px;
+}
+.empty-state h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+}
+.empty-state p {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+/* ════════════════════════════════
+   TOUCH FEEDBACK - UNIVERSAL
+════════════════════════════════ */
+button,
+.sub-list-item,
+.doc-list-item,
+.accordion-header,
+.keagamaan-publik-tab,
+.nikah-tab,
+.book-item,
+.ios-btn-premium,
+.ios-list-item,
+.banner-dot,
+.theme-toggle,
+.notif-bell,
+.app-modal-close,
+.admin-section-header,
+.data-item,
+.btn-hapus {
+    transition: transform 0.1s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+button:active,
+.sub-list-item:active,
+.doc-list-item:active,
+.accordion-header:active,
+.keagamaan-publik-tab:active,
+.nikah-tab:active,
+.book-item:active,
+.ios-btn-premium:active,
+.ios-list-item:active,
+.banner-dot:active,
+.theme-toggle:active,
+.notif-bell:active,
+.app-modal-close:active,
+.admin-section-header:active,
+.data-item:active,
+.btn-hapus:active {
+    transform: scale(0.98);
+}
+
+/* ════════════════════════════════
+   SEARCH INPUT WITH CLEAR BUTTON
+════════════════════════════════ */
+.search-wrapper {
+    position: relative;
+    width: 100%;
+}
+.search-wrapper input {
+    padding-right: 44px !important;
+}
+.search-clear {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, background 0.15s ease;
+}
+.search-wrapper.has-value .search-clear {
+    opacity: 1;
+    pointer-events: auto;
+}
+.search-clear:hover {
+    background: rgba(15, 118, 110, 0.1);
+    color: var(--green-mid);
+}
+.search-clear:active {
+    transform: translateY(-50%) scale(0.9);
+}
+.search-clear .material-icons-outlined {
+    font-size: 18px;
+}
+
+/* ════════════════════════════════
+   DARK MODE SKELETON
+════════════════════════════════ */
+body.dark-mode .skeleton {
+    background: linear-gradient(90deg, #1e2a26 25%, #2a3d36 50%, #1e2a26 75%);
+    background-size: 200% 100%;
+}
+body.dark-mode .skeleton-card {
+    background: #1a2e26;
+    border-color: rgba(255,255,255,0.06);
+}
+
+/* ════════════════════════════════
    BLANGKO DOCUMENTS
 ════════════════════════════════ */
 .doc-list-group { background: var(--green-tint); border-radius: 20px; overflow: hidden; padding: 6px; list-style: none; margin: 0;}

@@ -23,7 +23,52 @@ window.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('dark-mode');
         updateToggleIcon(true);
     }
+
+    // Init search clear buttons
+    initSearchClearButtons();
 });
+
+// ===== SKELETON & UI HELPERS =====
+function renderSkeleton(type, count = 4) {
+    const skeletons = {
+        jadwal: () => '<div class="skeleton skeleton-jadwal skeleton-card"><div class="skeleton-row"><div class="skeleton-content"><div class="skeleton-text short"></div><div class="skeleton-text short"></div><div class="skeleton-text short"></div></div></div></div>',
+        petugas: () => '<div class="skeleton skeleton-petugas skeleton-card"><div class="skeleton-row"><div class="skeleton-avatar"></div><div class="skeleton-content"><div class="skeleton-text short"></div><div class="skeleton-text short"></div><div class="skeleton-text short"></div></div></div></div>',
+        pondasi: () => '<div class="skeleton skeleton-pondasi skeleton-card"><div class="skeleton-row"><div class="skeleton-avatar" style="width:72px;height:72px;border-radius:10px;"></div><div class="skeleton-content"><div class="skeleton-text short"></div><div class="skeleton-text short"></div></div></div></div>',
+        keagamaan: () => '<div class="skeleton skeleton-keagamaan skeleton-card"><div class="skeleton-text short"></div><div class="skeleton-text short"></div></div>',
+        nikah: () => '<div class="skeleton skeleton-card"><div class="skeleton-row"><div class="skeleton-content"><div class="skeleton-text short"></div><div class="skeleton-text short"></div><div class="skeleton-text short"></div></div></div></div>',
+        generic: () => '<div class="skeleton skeleton-card"><div class="skeleton-text long"></div><div class="skeleton-text short"></div></div>'
+    };
+    const render = skeletons[type] || skeletons.generic;
+    return Array(count).fill(0).map(render).join('');
+}
+
+function renderEmptyState(icon, title, message) {
+    return '<div class="empty-state"><div class="empty-illustration" style="background:' + icon + ';border-radius:50%;"></div><h4>' + title + '</h4><p>' + message + '</p></div>';
+}
+
+function triggerCrossFade(container) {
+    if (!container) return;
+    container.classList.add('fading');
+    // Force reflow
+    container.offsetHeight;
+    container.classList.remove('fading');
+}
+
+function initSearchClearButtons() {
+    document.querySelectorAll('input[type="text"][id$="SearchInput"], input[type="text"][id$="searchInput"]').forEach(input => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'search-wrapper';
+        input.parentNode.insertBefore(wrapper, input);
+        wrapper.appendChild(input);
+        const clearBtn = document.createElement('button');
+        clearBtn.type = 'button';
+        clearBtn.className = 'search-clear';
+        clearBtn.innerHTML = '<span class="material-icons-outlined">close</span>';
+        clearBtn.onclick = () => { input.value = ''; wrapper.classList.remove('has-value'); input.dispatchEvent(new Event('input')); input.focus(); };
+        wrapper.appendChild(clearBtn);
+        input.addEventListener('input', () => wrapper.classList.toggle('has-value', input.value.length > 0));
+    });
+}
 
 // THEME TOGGLE
 const themeToggle = document.getElementById('themeToggle');
@@ -156,29 +201,39 @@ window.tutupModalJadwal = function() {
 
 function loadJadwalModal() {
     const container = document.getElementById('jadwalModalContent');
-    container.innerHTML = '<div class="text-center text-muted p-4"><div class="spinner-border spinner-border-sm text-success me-2" role="status"></div> Memuat data jadwal...</div>';
+    container.innerHTML = renderSkeleton('jadwal', 5);
     fetch('api/jadwal-api.php?action=getJadwal')
         .then(r => r.json())
         .then(data => {
+            triggerCrossFade(container);
             if (!data || data.length === 0) {
-                container.innerHTML = '<div class="text-center text-muted p-4"><span class="material-icons-outlined" style="font-size:48px;color:#cbd5e1;">event_busy</span><p class="mt-2" style="font-size:0.9rem;">Belum ada data jadwal akad.</p></div>';
+                container.innerHTML = renderEmptyState('#0f766e', 'Belum ada jadwal akad', 'Data jadwal akan muncul di sini setelah ditambahkan oleh petugas.');
                 return;
             }
             window._jadwalData = data;
             renderJadwalList(data, container);
         })
-        .catch(() => { container.innerHTML = '<div class="text-center p-4" style="color:#ef4444;font-size:0.9rem;">Gagal memuat data.</div>'; });
+        .catch(() => { triggerCrossFade(container); container.innerHTML = '<div class="text-center p-4" style="color:#ef4444;font-size:0.9rem;">Gagal memuat data.</div>'; });
 }
 
 function renderJadwalList(data, container) {
     let html = '<div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;">';
-    html += '<input type="text" id="jadwalSearchInput" placeholder="🔍 Cari nama..." style="flex:1;min-width:140px;padding:12px 16px;border-radius:12px;border:1.5px solid rgba(15,118,110,0.08);font-size:0.85rem;outline:none;background:#fff;">';
+    html += '<div class="search-wrapper" style="flex:1;min-width:140px;"><input type="text" id="jadwalSearchInput" placeholder="🔍 Cari nama..." style="width:100%;padding:12px 16px;border-radius:12px;border:1.5px solid rgba(15,118,110,0.08);font-size:0.85rem;outline:none;background:#fff;"></div>';
     html += '<input type="date" id="jadwalDateFilter" style="padding:12px 16px;border-radius:12px;border:1.5px solid rgba(15,118,110,0.08);font-size:0.85rem;outline:none;background:#fff;">';
     html += '</div>';
     html += '<div id="jadwalListContainer">';
     html += buildJadwalItems(data);
     html += '</div>';
     container.innerHTML = html;
+
+    // Re-init clear button for new input
+    const searchInput = document.getElementById('jadwalSearchInput');
+    if (searchInput) {
+        const wrapper = searchInput.closest('.search-wrapper');
+        if (wrapper) {
+            searchInput.addEventListener('input', () => wrapper.classList.toggle('has-value', searchInput.value.length > 0));
+        }
+    }
 
     document.getElementById('jadwalSearchInput').addEventListener('input', filterJadwal);
     document.getElementById('jadwalDateFilter').addEventListener('change', filterJadwal);
@@ -226,29 +281,38 @@ window.tutupModalPetugas = function() {
 
 function loadPetugasModal() {
     const container = document.getElementById('petugasModalContent');
-    container.innerHTML = '<div class="text-center text-muted p-4"><div class="spinner-border spinner-border-sm text-success me-2" role="status"></div> Memuat data petugas...</div>';
+    container.innerHTML = renderSkeleton('petugas', 5);
     fetch('api/jadwal-api.php?action=getPetugas')
         .then(r => r.json())
         .then(data => {
+            triggerCrossFade(container);
             if (!data || data.length === 0) {
-                container.innerHTML = '<div class="text-center text-muted p-4"><span class="material-icons-outlined" style="font-size:48px;color:#cbd5e1;">person_off</span><p class="mt-2" style="font-size:0.9rem;">Belum ada data petugas.</p></div>';
+                container.innerHTML = renderEmptyState('#0f766e', 'Belum ada data petugas', 'Data petugas akan muncul di sini setelah ditambahkan.');
                 return;
             }
             window._petugasData = data;
             renderPetugasList(data, container);
         })
-        .catch(() => { container.innerHTML = '<div class="text-center p-4" style="color:#ef4444;font-size:0.9rem;">Gagal memuat data.</div>'; });
+        .catch(() => { triggerCrossFade(container); container.innerHTML = '<div class="text-center p-4" style="color:#ef4444;font-size:0.9rem;">Gagal memuat data.</div>'; });
 }
 
 function renderPetugasList(data, container) {
     let html = '<div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;">';
-    html += '<input type="text" id="petugasSearchInput" placeholder="🔍 Cari nama..." style="flex:1;min-width:140px;padding:12px 16px;border-radius:12px;border:1.5px solid rgba(15,118,110,0.08);font-size:0.85rem;outline:none;background:#fff;">';
+    html += '<div class="search-wrapper" style="flex:1;min-width:140px;"><input type="text" id="petugasSearchInput" placeholder="🔍 Cari nama..." style="width:100%;padding:12px 16px;border-radius:12px;border:1.5px solid rgba(15,118,110,0.08);font-size:0.85rem;outline:none;background:#fff;"></div>';
     html += '<input type="date" id="petugasDateFilter" style="padding:12px 16px;border-radius:12px;border:1.5px solid rgba(15,118,110,0.08);font-size:0.85rem;outline:none;background:#fff;">';
     html += '</div>';
     html += '<div id="petugasListContainer">';
     html += buildPetugasItems(data);
     html += '</div>';
     container.innerHTML = html;
+
+    const searchInput = document.getElementById('petugasSearchInput');
+    if (searchInput) {
+        const wrapper = searchInput.closest('.search-wrapper');
+        if (wrapper) {
+            searchInput.addEventListener('input', () => wrapper.classList.toggle('has-value', searchInput.value.length > 0));
+        }
+    }
 
     document.getElementById('petugasSearchInput').addEventListener('input', filterPetugas);
     document.getElementById('petugasDateFilter').addEventListener('change', filterPetugas);
@@ -331,6 +395,66 @@ function _esc(text) {
     const div = document.createElement('div');
     div.textContent = text || '';
     return div.innerHTML;
+}
+
+// ===== UI HELPERS (Skeleton, Empty State, Cross-Fade) =====
+function renderSkeleton(type, count) {
+    var skeletons = {
+        jadwal: function(n) {
+            var html = '<div class="skeleton skeleton-jadwal">';
+            for (var i = 0; i < n; i++) {
+                html += '<div class="skeleton-row"><div class="skeleton-content"><div class="skeleton-text"></div><div class="skeleton-text short"></div><div class="skeleton-text short"></div></div></div>';
+            }
+            html += '</div>';
+            return html;
+        },
+        petugas: function(n) {
+            var html = '<div class="skeleton skeleton-petugas">';
+            for (var i = 0; i < n; i++) {
+                html += '<div class="skeleton-row"><div class="skeleton-avatar"></div><div class="skeleton-content"><div class="skeleton-text"></div><div class="skeleton-text short"></div><div class="skeleton-text short"></div></div></div>';
+            }
+            html += '</div>';
+            return html;
+        },
+        pondasi: function(n) {
+            var html = '<div class="skeleton skeleton-pondasi">';
+            for (var i = 0; i < n; i++) {
+                html += '<div class="skeleton-row"><div class="skeleton-avatar" style="width:72px;height:72px;border-radius:10px;"></div><div class="skeleton-content"><div class="skeleton-text"></div><div class="skeleton-text short"></div></div></div>';
+            }
+            html += '</div>';
+            return html;
+        },
+        keagamaan: function(n) {
+            var html = '<div class="skeleton skeleton-keagamaan">';
+            for (var i = 0; i < n; i++) {
+                html += '<div class="skeleton-row" style="padding:16px 18px;background:#fff;border-radius:0;border-bottom:1px solid rgba(0,0,0,0.04);"><div class="skeleton-content" style="flex:1;"><div class="skeleton-text"></div><div class="skeleton-text short"></div></div></div>';
+            }
+            html += '</div>';
+            return html;
+        }
+    };
+    return (skeletons[type] || skeletons.keagamaan)(count);
+}
+
+function renderEmptyState(iconColor, title, description) {
+    var svgIcons = {
+        '#6366f1': '<svg class="empty-illustration" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="40" y="40" width="120" height="120" rx="16" stroke="currentColor" stroke-width="2" stroke-dasharray="8 4" opacity="0.2"/><path d="M100 60 L100 140 M60 100 L140 100" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.3"/></svg>',
+        '#059669': '<svg class="empty-illustration" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="100" cy="100" r="80" stroke="currentColor" stroke-width="2" stroke-dasharray="8 4" opacity="0.2"/><path d="M100 60 C122 60 140 78 140 100 C140 122 122 140 100 140 C78 140 60 122 60 100 C60 78 78 60 100 60 Z" fill="currentColor" opacity="0.3"/><path d="M100 75 C113.8 75 125 86.2 125 100 C125 113.8 113.8 125 100 125 C86.2 125 75 113.8 75 100 C75 86.2 86.2 75 100 75 Z" fill="currentColor" opacity="0.5"/><circle cx="100" cy="90" r="10" fill="currentColor" opacity="0.6"/></svg>',
+        '#d97706': '<svg class="empty-illustration" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 30 L170 85 L170 165 L100 220 L30 165 L30 85 Z" stroke="currentColor" stroke-width="2" stroke-dasharray="8 4" opacity="0.2"/><path d="M100 45 L155 100 M100 45 L45 100 M45 100 L100 155 M100 45 L100 205" stroke="currentColor" stroke-width="2" opacity="0.3"/></svg>',
+        '#7c3aed': '<svg class="empty-illustration" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 30 L140 70 L100 110 L60 70 Z" stroke="currentColor" stroke-width="2" stroke-dasharray="8 4" opacity="0.2"/><circle cx="100" cy="70" r="20" fill="currentColor" opacity="0.3"/><path d="M100 90 L100 150" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.5"/></svg>'
+    };
+    var iconSvg = svgIcons[iconColor] || svgIcons['#6366f1'];
+    return '<div class="empty-state" style="color:' + iconColor + ';">' + iconSvg + '<h4>' + _esc(title) + '</h4><p>' + _esc(description) + '</p></div>';
+}
+
+function triggerCrossFade(container) {
+    if (!container) return;
+    container.classList.add('fading');
+    requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+            container.classList.remove('fading');
+        });
+    });
 }
 
 // CLOSE MODAL ON BACKDROP CLICK
@@ -556,13 +680,13 @@ window.loadPondasiData = function() {
     try {
         var container = document.getElementById('pondasiContent');
         if (!container) { console.error('pondasiContent not found'); return; }
-        container.innerHTML = '<div class="text-center text-muted p-4"><div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>Memuat data...</div>';
+        container.innerHTML = '<div class="skeleton skeleton-pondasi"><div class="skeleton-row"><div class="skeleton-avatar"></div><div class="skeleton-content"><div class="skeleton-text"></div><div class="skeleton-text short"></div></div></div><div class="skeleton-row"><div class="skeleton-avatar"></div><div class="skeleton-content"><div class="skeleton-text"></div><div class="skeleton-text short"></div></div></div><div class="skeleton-row"><div class="skeleton-avatar"></div><div class="skeleton-content"><div class="skeleton-text"></div><div class="skeleton-text short"></div></div></div></div>';
 
         fetch('api/jadwal-api.php?action=getPondasi')
             .then(function(r) { return r.json(); })
             .then(function(data) {
                 if (!data || data.length === 0) {
-                    container.innerHTML = '<div class="text-center p-4"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data calon pengantin.</p></div>';
+                    container.innerHTML = '<div class="empty-state"><svg class="empty-illustration" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="100" cy="100" r="80" stroke="currentColor" stroke-width="2" stroke-dasharray="8 4" opacity="0.2"/><path d="M100 60 C122 60 140 78 140 100 C140 122 122 140 100 140 C78 140 60 122 60 100 C60 78 78 60 100 60 Z" fill="currentColor" opacity="0.3"/><path d="M100 75 C113.8 75 125 86.2 125 100 C125 113.8 113.8 125 100 125 C86.2 125 75 113.8 75 100 C75 86.2 86.2 75 100 75 Z" fill="currentColor" opacity="0.5"/><circle cx="100" cy="90" r="10" fill="currentColor" opacity="0.6"/><path d="M100 120 C80 120 60 100 60 80" stroke="currentColor" stroke-width="8" stroke-linecap="round" opacity="0.3"/></svg><h4>Belum Ada Data Pondasi Sakinah</h4><p>Data calon pengantin akan muncul di sini setelah petugas menambahkannya.</p></div>';
                     return;
                 }
             var html = '<div style="display:flex;flex-direction:column;gap:12px;">';
@@ -666,7 +790,7 @@ window.loadMasjidTab = function(sheetName) {
         btn.classList.toggle('active', btn.getAttribute('data-tab') === sheetName);
     });
     var container = document.getElementById('masjidMusholaPublikContent');
-    container.innerHTML = '<div class="text-center text-muted p-4"><div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>Memuat data...</div>';
+    container.innerHTML = renderSkeleton('keagamaan', 6);
 
     var url = 'https://docs.google.com/spreadsheets/d/' + MASJID_SHEET_ID + '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent(sheetName);
     fetch(url)
@@ -674,7 +798,8 @@ window.loadMasjidTab = function(sheetName) {
         .then(function(csv) {
             var lines = parseCSVLines(csv);
             if (lines.length < 2) {
-                container.innerHTML = '<div class="text-center p-4"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data.</p></div>';
+                triggerCrossFade(container);
+                container.innerHTML = renderEmptyState('#6366f1', 'Belum ada data Masjid', 'Data masjid untuk desa ini belum tersedia.');
                 return;
             }
             var headers = lines[0].map(function(h) { return h.replace(/"/g, '').trim().toLowerCase(); });
@@ -690,9 +815,11 @@ window.loadMasjidTab = function(sheetName) {
             }
             rows.sort(function(a, b) { return a.nama.localeCompare(b.nama); });
             if (rows.length === 0) {
-                container.innerHTML = '<div class="text-center p-4"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data.</p></div>';
+                triggerCrossFade(container);
+                container.innerHTML = renderEmptyState('#6366f1', 'Belum ada data Masjid', 'Data masjid untuk desa ini belum tersedia.');
                 return;
             }
+            triggerCrossFade(container);
             var html = '<div class="tab-list-content">';
             rows.forEach(function(item) {
                 html += '<div class="tab-list-item">';
@@ -704,6 +831,7 @@ window.loadMasjidTab = function(sheetName) {
             container.innerHTML = html;
         })
         .catch(function() {
+            triggerCrossFade(container);
             container.innerHTML = '<div class="text-center text-muted p-3"><p style="font-size:0.85rem;color:#ef4444;">Gagal memuat data.</p></div>';
         });
 };
@@ -738,7 +866,7 @@ window.loadWakafTab = function(kelurahan) {
         btn.classList.toggle('active', btn.getAttribute('data-tab') === kelurahan);
     });
     var container = document.getElementById('wakafPublikContent');
-    container.innerHTML = '<div class="text-center text-muted p-4"><div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>Memuat data...</div>';
+    container.innerHTML = renderSkeleton('keagamaan', 6);
 
     var url = 'https://docs.google.com/spreadsheets/d/' + WAKAF_SHEET_ID + '/gviz/tq?tqx=out:csv&sheet=Tanah%20Wakaf';
     fetch(url)
@@ -747,7 +875,8 @@ window.loadWakafTab = function(kelurahan) {
             csv = csv.replace(/\r/g, '');
             var lines = parseCSVLines(csv);
             if (lines.length < 2) {
-                container.innerHTML = '<div class="text-center p-4"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data.</p></div>';
+                triggerCrossFade(container);
+                container.innerHTML = renderEmptyState('#d97706', 'Belum ada data Tanah Wakaf', 'Data tanah wakaf untuk kelurahan ini belum tersedia.');
                 return;
             }
             var headers = lines[0].map(function(h) { return h.replace(/"/g, '').trim().toLowerCase(); });
@@ -766,9 +895,11 @@ window.loadWakafTab = function(kelurahan) {
             }
             rows.sort(function(a, b) { return a.alamat.localeCompare(b.alamat); });
             if (rows.length === 0) {
-                container.innerHTML = '<div class="text-center p-4"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data.</p></div>';
+                triggerCrossFade(container);
+                container.innerHTML = renderEmptyState('#d97706', 'Tidak ada data untuk ' + kelurahan, 'Belum ada data tanah wakaf di kelurahan ini.');
                 return;
             }
+            triggerCrossFade(container);
             var html = '<div style="display:flex;flex-direction:column;gap:1px;background:rgba(0,0,0,0.04);border-radius:14px;overflow:hidden;">';
             rows.forEach(function(item) {
                 html += '<div style="padding:14px 16px;background:#fff;">';
@@ -783,6 +914,7 @@ window.loadWakafTab = function(kelurahan) {
             container.innerHTML = html;
         })
         .catch(function() {
+            triggerCrossFade(container);
             container.innerHTML = '<div class="text-center text-muted p-3"><p style="font-size:0.85rem;color:#ef4444;">Gagal memuat data.</p></div>';
         });
 };
@@ -790,7 +922,7 @@ window.loadWakafTab = function(kelurahan) {
 window.loadKeagamaanPublik = function(tipe, contentId, tabsId) {
     var container = document.getElementById(contentId);
     if (!container) return;
-    container.innerHTML = '<div class="text-center text-muted p-4"><div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>Memuat data...</div>';
+    container.innerHTML = renderSkeleton('keagamaan', 6);
 
     if (tabsId) {
         document.querySelectorAll('#' + tabsId + ' .keagamaan-publik-tab').forEach(function(btn) {
@@ -800,7 +932,8 @@ window.loadKeagamaanPublik = function(tipe, contentId, tabsId) {
 
     var sheetId = KEAGAMAAN_SHEETS[tipe];
     if (!sheetId) {
-        container.innerHTML = '<div class="text-center text-muted p-3"><p style="font-size:0.85rem;color:#94a3b8;">Belum ada data.</p></div>';
+        triggerCrossFade(container);
+        container.innerHTML = renderEmptyState('#6366f1', 'Belum ada data', 'Data untuk kategori ini belum tersedia.');
         return;
     }
 
