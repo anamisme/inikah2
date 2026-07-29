@@ -588,6 +588,30 @@ window.loadPondasiData = function() {
     } catch(e) { console.error('loadPondasiData error:', e); }
 };
 
+// ===== CACHED FETCH (localStorage 1 jam) =====
+function cachedFetch(url, ttlMs) {
+    if (ttlMs === undefined) ttlMs = 3600000; // 1 jam default
+    var cacheKey = 'cf_' + btoa(url);
+    try {
+        var cached = localStorage.getItem(cacheKey);
+        if (cached) {
+            var parsed = JSON.parse(cached);
+            if (Date.now() - parsed.ts < ttlMs) {
+                return Promise.resolve(parsed.data);
+            }
+        }
+    } catch(e) {}
+    return fetch(url).then(function(r) {
+        if (!r.ok) throw new Error('fetch failed');
+        return r.text();
+    }).then(function(text) {
+        try {
+            localStorage.setItem(cacheKey, JSON.stringify({ ts: Date.now(), data: text }));
+        } catch(e) {}
+        return text;
+    });
+}
+
 // ===== DATA KEAGAMAAN (GOOGLE SHEETS) =====
 const KEAGAMAAN_SHEETS = {
     tpq:     '1sgstI0bnvw6OGdqENQON2lhUun5agfWi5PgdT_o6gVI',
@@ -669,8 +693,7 @@ window.loadMasjidTab = function(sheetName) {
     container.innerHTML = '<div class="text-center text-muted p-4"><div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>Memuat data...</div>';
 
     var url = 'https://docs.google.com/spreadsheets/d/' + MASJID_SHEET_ID + '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent(sheetName);
-    fetch(url)
-        .then(function(r) { return r.text(); })
+    cachedFetch(url)
         .then(function(csv) {
             var lines = parseCSVLines(csv);
             if (lines.length < 2) {
@@ -741,8 +764,7 @@ window.loadWakafTab = function(kelurahan) {
     container.innerHTML = '<div class="text-center text-muted p-4"><div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>Memuat data...</div>';
 
     var url = 'https://docs.google.com/spreadsheets/d/' + WAKAF_SHEET_ID + '/gviz/tq?tqx=out:csv&sheet=Tanah%20Wakaf';
-    fetch(url)
-        .then(function(r) { return r.text(); })
+    cachedFetch(url)
         .then(function(csv) {
             csv = csv.replace(/\r/g, '');
             var lines = parseCSVLines(csv);
@@ -805,8 +827,7 @@ window.loadKeagamaanPublik = function(tipe, contentId, tabsId) {
     }
 
     var url = 'https://docs.google.com/spreadsheets/d/' + sheetId + '/gviz/tq?tqx=out:csv';
-    fetch(url)
-        .then(function(r) { return r.text(); })
+    cachedFetch(url)
         .then(function(csv) {
             var rows = parseKeagamaanCSV(csv, tipe);
             _keagamaanData[tipe] = rows;
@@ -984,11 +1005,7 @@ function loadNikahYear(year) {
     var sheetName = year === 2008 ? '2008' : String(year);
     var url = 'https://docs.google.com/spreadsheets/d/' + NIKAH_SHEET_ID + '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent(sheetName);
 
-    fetch(url)
-        .then(function(r) {
-            if (!r.ok) throw new Error('Sheet not found');
-            return r.text();
-        })
+    cachedFetch(url)
         .then(function(csv) {
             var rows = parseNikahCSV(csv);
             if (rows.length === 0) {
