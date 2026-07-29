@@ -42,18 +42,6 @@ function renderSkeleton(type, count = 4) {
     return Array(count).fill(0).map(render).join('');
 }
 
-function renderEmptyState(icon, title, message) {
-    return '<div class="empty-state"><div class="empty-illustration" style="background:' + icon + ';border-radius:50%;"></div><h4>' + title + '</h4><p>' + message + '</p></div>';
-}
-
-function triggerCrossFade(container) {
-    if (!container) return;
-    container.classList.add('fading');
-    // Force reflow
-    container.offsetHeight;
-    container.classList.remove('fading');
-}
-
 function initSearchClearButtons() {
     document.querySelectorAll('input[type="text"][id$="SearchInput"], input[type="text"][id$="searchInput"]').forEach(input => {
         const wrapper = document.createElement('div');
@@ -397,65 +385,7 @@ function _esc(text) {
     return div.innerHTML;
 }
 
-// ===== UI HELPERS (Skeleton, Empty State, Cross-Fade) =====
-function renderSkeleton(type, count) {
-    var skeletons = {
-        jadwal: function(n) {
-            var html = '<div class="skeleton skeleton-jadwal">';
-            for (var i = 0; i < n; i++) {
-                html += '<div class="skeleton-row"><div class="skeleton-content"><div class="skeleton-text"></div><div class="skeleton-text short"></div><div class="skeleton-text short"></div></div></div>';
-            }
-            html += '</div>';
-            return html;
-        },
-        petugas: function(n) {
-            var html = '<div class="skeleton skeleton-petugas">';
-            for (var i = 0; i < n; i++) {
-                html += '<div class="skeleton-row"><div class="skeleton-avatar"></div><div class="skeleton-content"><div class="skeleton-text"></div><div class="skeleton-text short"></div><div class="skeleton-text short"></div></div></div>';
-            }
-            html += '</div>';
-            return html;
-        },
-        pondasi: function(n) {
-            var html = '<div class="skeleton skeleton-pondasi">';
-            for (var i = 0; i < n; i++) {
-                html += '<div class="skeleton-row"><div class="skeleton-avatar" style="width:72px;height:72px;border-radius:10px;"></div><div class="skeleton-content"><div class="skeleton-text"></div><div class="skeleton-text short"></div></div></div>';
-            }
-            html += '</div>';
-            return html;
-        },
-        keagamaan: function(n) {
-            var html = '<div class="skeleton skeleton-keagamaan">';
-            for (var i = 0; i < n; i++) {
-                html += '<div class="skeleton-row" style="padding:16px 18px;background:#fff;border-radius:0;border-bottom:1px solid rgba(0,0,0,0.04);"><div class="skeleton-content" style="flex:1;"><div class="skeleton-text"></div><div class="skeleton-text short"></div></div></div>';
-            }
-            html += '</div>';
-            return html;
-        }
-    };
-    return (skeletons[type] || skeletons.keagamaan)(count);
-}
-
-function renderEmptyState(iconColor, title, description) {
-    var svgIcons = {
-        '#6366f1': '<svg class="empty-illustration" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="40" y="40" width="120" height="120" rx="16" stroke="currentColor" stroke-width="2" stroke-dasharray="8 4" opacity="0.2"/><path d="M100 60 L100 140 M60 100 L140 100" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.3"/></svg>',
-        '#059669': '<svg class="empty-illustration" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="100" cy="100" r="80" stroke="currentColor" stroke-width="2" stroke-dasharray="8 4" opacity="0.2"/><path d="M100 60 C122 60 140 78 140 100 C140 122 122 140 100 140 C78 140 60 122 60 100 C60 78 78 60 100 60 Z" fill="currentColor" opacity="0.3"/><path d="M100 75 C113.8 75 125 86.2 125 100 C125 113.8 113.8 125 100 125 C86.2 125 75 113.8 75 100 C75 86.2 86.2 75 100 75 Z" fill="currentColor" opacity="0.5"/><circle cx="100" cy="90" r="10" fill="currentColor" opacity="0.6"/></svg>',
-        '#d97706': '<svg class="empty-illustration" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 30 L170 85 L170 165 L100 220 L30 165 L30 85 Z" stroke="currentColor" stroke-width="2" stroke-dasharray="8 4" opacity="0.2"/><path d="M100 45 L155 100 M100 45 L45 100 M45 100 L100 155 M100 45 L100 205" stroke="currentColor" stroke-width="2" opacity="0.3"/></svg>',
-        '#7c3aed': '<svg class="empty-illustration" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 30 L140 70 L100 110 L60 70 Z" stroke="currentColor" stroke-width="2" stroke-dasharray="8 4" opacity="0.2"/><circle cx="100" cy="70" r="20" fill="currentColor" opacity="0.3"/><path d="M100 90 L100 150" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.5"/></svg>'
-    };
-    var iconSvg = svgIcons[iconColor] || svgIcons['#6366f1'];
-    return '<div class="empty-state" style="color:' + iconColor + ';">' + iconSvg + '<h4>' + _esc(title) + '</h4><p>' + _esc(description) + '</p></div>';
-}
-
-function triggerCrossFade(container) {
-    if (!container) return;
-    container.classList.add('fading');
-    requestAnimationFrame(function() {
-        requestAnimationFrame(function() {
-            container.classList.remove('fading');
-        });
-    });
-}
+// CLOSE MODAL ON BACKDROP CLICK
 
 // CLOSE MODAL ON BACKDROP CLICK
 window.addEventListener('DOMContentLoaded', function() {
