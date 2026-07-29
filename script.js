@@ -704,7 +704,7 @@ window.loadMasjidTab = function(sheetName) {
             var rows = [];
             for (var i = 1; i < lines.length; i++) {
                 var cols = lines[i];
-                var nama = (colVal(cols, headers, 'nama masjid/musholah') || colVal(cols, headers, 'nama masjid/mushola') || '').trim();
+                var nama = (colVal(cols, headers, 'nama masjid/musholah') || colVal(cols, headers, 'nama masjid/mushola') || colVal(cols, headers, 'nama musholla') || colVal(cols, headers, 'nama mushollah') || '').trim();
                 if (!nama) continue;
                 rows.push({
                     nama: nama,
@@ -897,7 +897,7 @@ function parseKeagamaanCSV(csv, tipe) {
 
         var item = {};
         if (tipe === 'masjid') {
-            item.nama = colVal(cols, headers, 'nama masjid/musholah') || colVal(cols, headers, 'nama');
+            item.nama = colVal(cols, headers, 'nama masjid/musholah') || colVal(cols, headers, 'nama masjid/mushola') || colVal(cols, headers, 'nama musholla') || colVal(cols, headers, 'nama');
             item.alamat = colVal(cols, headers, 'alamat') || '';
             if (!item.nama) continue;
             rows.push(item);
