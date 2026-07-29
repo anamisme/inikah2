@@ -913,6 +913,7 @@ function parseKeagamaanCSV(csv, tipe) {
             item.jenjang = colVal(cols, headers, 'jenjang') || '';
             item.statistik = colVal(cols, headers, 'nomor statistik') || '';
             item.alamat = colVal(cols, headers, 'alamat') || '';
+            item.desa = colVal(cols, headers, 'desa/kelurahan') || '';
             if (!item.nama) continue;
             rows.push(item);
         } else if (tipe === 'wakaf') {
@@ -939,9 +940,9 @@ function colVal(cols, headers, name) {
 }
 
 function renderKeagamaanList(rows, tipe, container) {
-    var html = '<div style="display:flex;flex-direction:column;gap:1px;background:rgba(0,0,0,0.04);border-radius:14px;overflow:hidden;">';
-    rows.forEach(function(item) {
-        html += '<div style="padding:14px 16px;background:#fff;">';
+    var html = '<div style="display:flex;flex-direction:column;border-radius:14px;overflow:hidden;border:1px solid rgba(0,0,0,0.04);">';
+    rows.forEach(function(item, idx) {
+        html += '<div style="padding:14px 16px;background:#fff;' + (idx < rows.length - 1 ? 'border-bottom:1px solid rgba(0,0,0,0.06);' : '') + '">';
         html += '<p style="font-weight:600;font-size:0.88rem;margin-bottom:4px;color:var(--text);">' + _esc(item.nama || item.desa) + '</p>';
 
         if (tipe === 'masjid') {
@@ -952,6 +953,7 @@ function renderKeagamaanList(rows, tipe, container) {
         } else if (tipe === 'madin') {
             if (item.jenjang) html += '<p style="font-size:0.76rem;color:#94a3b8;">Jenjang: ' + _esc(item.jenjang) + '</p>';
             if (item.statistik) html += '<p style="font-size:0.76rem;color:#94a3b8;">No. Statistik: ' + _esc(item.statistik) + '</p>';
+            if (item.desa) html += '<p style="font-size:0.76rem;color:#94a3b8;">📍 Desa: ' + _esc(item.desa) + '</p>';
             if (item.alamat) html += '<p style="font-size:0.76rem;color:#64748b;">📍 Alamat: ' + _esc(item.alamat) + '</p>';
         }
 
