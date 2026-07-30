@@ -124,6 +124,8 @@ function toggleBookShelf(event) {
 
 // UNIVERSAL FLOATING MODAL SYSTEM
 window.bukaModalFrame = function(url, judul) {
+    const overlay = document.getElementById('submenuOverlay');
+    if (overlay && overlay.classList.contains('open')) closeOverlay();
     const modal = document.getElementById('appModal');
     const frame = document.getElementById('appModalFrame');
     const title = document.getElementById('appModalTitle');
