@@ -223,20 +223,15 @@ body.dark-mode .banner-dot.active {
 .ios-container { width: 100%; max-width: 37.5rem; margin: 0 auto; padding: 0 16px; }
 
 .ios-main-card {
-    background: 
-        linear-gradient(145deg, #ffffff 0%, #f4fdf8 100%) padding-box,
-        linear-gradient(135deg, rgba(20, 184, 166, 0.7) 0%, rgba(15, 118, 110, 0.05) 50%, rgba(6, 78, 59, 0.6) 100%) border-box;
-    border: 1.5px solid transparent;
+    background: #fff;
     border-radius: 28px;
     padding: 20px;
     margin-bottom: 28px;
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    box-shadow: 
-        0 8px 0 rgba(15, 118, 110, 0.12),         
-        0 16px 24px rgba(6, 78, 59, 0.08),        
-        inset 0 2px 4px rgba(255, 255, 255, 1);   
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(15, 118, 110, 0.08);
 }
 
 .ios-main-card:hover {
@@ -316,10 +311,10 @@ body.dark-mode .banner-dot.active {
    FLUID ACCORDION MULTI-LEVEL
 ════════════════════════════════ */
 .ios-submenu-wrapper {
-    display: none;
-}
-.ios-submenu-wrapper.active {
-    display: block;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: max-height;
 }
 .ios-submenu-inner { 
     margin-top: 16px; padding-top: 12px;

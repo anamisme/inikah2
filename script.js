@@ -69,7 +69,20 @@ function toggleMainMenu(idSubmenu, idChevron) {
     const submenu = document.getElementById(idSubmenu);
     const chevron = document.getElementById(idChevron);
     if (submenu && chevron) {
-        submenu.classList.toggle('active');
+        const isOpen = submenu.classList.contains('active');
+        if (isOpen) {
+            submenu.style.maxHeight = submenu.scrollHeight + 'px';
+            requestAnimationFrame(() => {
+                submenu.classList.remove('active');
+                submenu.style.maxHeight = '0px';
+            });
+        } else {
+            submenu.classList.add('active');
+            submenu.style.maxHeight = submenu.scrollHeight + 'px';
+            setTimeout(() => {
+                submenu.style.maxHeight = '';
+            }, 350);
+        }
         chevron.classList.toggle('rotated');
     }
 }
