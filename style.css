@@ -316,18 +316,13 @@ body.dark-mode .banner-dot.active {
    FLUID ACCORDION MULTI-LEVEL
 ════════════════════════════════ */
 .ios-submenu-wrapper {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.35s ease;
+    display: none;
 }
 .ios-submenu-wrapper.active {
-    max-height: 600px;
+    display: block;
 }
 .ios-submenu-inner { 
-    overflow: hidden;
-}
-.ios-submenu-wrapper.active .ios-submenu-inner { 
-    opacity: 1; margin-top: 16px; padding-top: 12px;
+    margin-top: 16px; padding-top: 12px;
     border-top: 1px solid var(--border);
 }
 
