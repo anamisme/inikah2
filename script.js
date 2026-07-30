@@ -87,6 +87,18 @@ function toggleMainMenu(idSubmenu, idChevron) {
     const content = template.querySelector('.ios-submenu-inner');
     if (content) panelInner.appendChild(content.cloneNode(true));
 
+    panelInner.onclick = function(e) {
+        var link = e.target.closest('a');
+        if (link && link.getAttribute('href')) {
+            var href = link.getAttribute('href');
+            if (href && !href.startsWith('#') && href !== '' && !link.hasAttribute('data-no-close')) {
+                e.preventDefault();
+                closeOverlay();
+                setTimeout(function() { window.location.href = href; }, 150);
+            }
+        }
+    };
+
     overlay.classList.add('open');
     chevron.classList.add('rotated');
 
