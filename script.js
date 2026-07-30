@@ -144,18 +144,16 @@ function toggleBookShelf(event) {
 window.bukaModalFrame = function(url, judul) {
     const overlay = document.getElementById('submenuOverlay');
     if (overlay && overlay.classList.contains('open')) closeOverlay();
+    if (url.toLowerCase().endsWith('.pdf')) {
+        setTimeout(function() { window.open(url, '_blank'); }, 350);
+        return;
+    }
     const modal = document.getElementById('appModal');
     const frame = document.getElementById('appModalFrame');
     const title = document.getElementById('appModalTitle');
     if (modal && frame && title) {
         title.innerText = judul;
-        var src = url;
-        if (url.toLowerCase().endsWith('.pdf')) {
-            var base = window.location.origin;
-            var fullUrl = url.indexOf('://') === -1 ? base + '/' + url.replace(/^\.?\//, '') : url;
-            src = 'https://docs.google.com/viewer?embedded=true&url=' + encodeURIComponent(fullUrl);
-        }
-        frame.src = src;
+        frame.src = url;
         modal.classList.add('show');
         document.body.style.overflow = 'hidden';
     }
