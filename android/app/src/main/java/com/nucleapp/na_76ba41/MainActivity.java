@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         webView = findViewById(R.id.myWebView);
+        webView.setBackgroundColor(0xFFF2F5F3);
         webView.setLayerType(WebView.LAYER_TYPE_HARDWARE, null);
 
         WebSettings ws = webView.getSettings();

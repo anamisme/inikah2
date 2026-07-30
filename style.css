@@ -13,23 +13,26 @@
     --muted:         #64748b;
 }
 
+html {
+    background-color: var(--bg);
+}
 * { 
     box-sizing: border-box; 
     margin: 0; 
     padding: 0;
     -webkit-tap-highlight-color: transparent;
 }
-
 body {
     background-color: var(--bg);
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: var(--text);
     -webkit-font-smoothing: antialiased;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
     padding-top: 160px; 
     padding-bottom: 40px;
     overflow-x: hidden;
     position: relative;
-    
 }
 
 
@@ -42,7 +45,8 @@ body {
     z-index: 10000;
     display: flex; flex-direction: column;
     justify-content: center; align-items: center;
-    
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
 
 .splash-brand { 
@@ -417,7 +421,8 @@ body.dark-mode .banner-dot.active {
     z-index: 2000;
     display: flex; align-items: center; justify-content: center;
     opacity: 0; pointer-events: none;
-    
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
     padding: 20px;
 }
 .app-modal-overlay.show { opacity: 1; pointer-events: auto; }
