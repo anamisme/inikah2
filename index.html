@@ -605,7 +605,15 @@
 
     </div>
 
-    <script src="script.js?v=16"></script>
+    <!-- Submenu floating overlay -->
+    <div class="submenu-overlay" id="submenuOverlay" onclick="closeOverlay()">
+        <div class="submenu-panel" onclick="event.stopPropagation()">
+            <div class="submenu-handle"></div>
+            <div class="submenu-panel-inner" id="submenuPanelInner"></div>
+        </div>
+    </div>
+
+    <script src="script.js?v=17"></script>
 </body>
 </html>
 

@@ -68,27 +68,46 @@ function createSplashHearts() {
     }
 }
 
-// ACCORDION NAVIGATION COLLAPSIBLE
+// SUBMENU FLOATING OVERLAY
 function toggleMainMenu(idSubmenu, idChevron) {
-    const submenu = document.getElementById(idSubmenu);
     const chevron = document.getElementById(idChevron);
-    if (submenu && chevron) {
-        const isOpen = submenu.classList.contains('active');
-        if (isOpen) {
-            submenu.style.maxHeight = submenu.scrollHeight + 'px';
-            requestAnimationFrame(() => {
-                submenu.classList.remove('active');
-                submenu.style.maxHeight = '0px';
-            });
-        } else {
-            submenu.classList.add('active');
-            submenu.style.maxHeight = submenu.scrollHeight + 'px';
-            setTimeout(() => {
-                submenu.style.maxHeight = '';
-            }, 350);
-        }
-        chevron.classList.toggle('rotated');
+    const template = document.getElementById(idSubmenu);
+    if (!chevron || !template) return;
+
+    if (chevron.classList.contains('rotated')) {
+        closeOverlay(chevron);
+        return;
     }
+
+    const overlay = document.getElementById('submenuOverlay');
+    const panelInner = document.getElementById('submenuPanelInner');
+    if (!overlay || !panelInner) return;
+
+    panelInner.innerHTML = '';
+    const content = template.querySelector('.ios-submenu-inner');
+    if (content) panelInner.appendChild(content.cloneNode(true));
+
+    overlay.classList.add('open');
+    chevron.classList.add('rotated');
+
+    overlay._onClose = function() {
+        chevron.classList.remove('rotated');
+    };
+}
+
+function closeOverlay(chevron) {
+    const overlay = document.getElementById('submenuOverlay');
+    if (!overlay) return;
+    overlay.classList.remove('open');
+    if (chevron) {
+        chevron.classList.remove('rotated');
+    } else if (overlay._onClose) {
+        overlay._onClose();
+    }
+    setTimeout(function() {
+        const panelInner = document.getElementById('submenuPanelInner');
+        if (panelInner) panelInner.innerHTML = '';
+    }, 300);
 }
 
 function toggleBookShelf(event) {
