@@ -112,8 +112,10 @@ function closeOverlay(chevron) {
 
 function toggleBookShelf(event) {
     event.stopPropagation();
-    const shelf = document.getElementById('innerBookshelf');
-    const chev  = document.getElementById('bookChevron');
+    const panel = document.getElementById('submenuPanelInner');
+    if (!panel) return;
+    const shelf = panel.querySelector('#innerBookshelf');
+    const chev  = panel.querySelector('#bookChevron');
     if (shelf && chev) {
         shelf.classList.toggle('show');
         chev.style.transform = shelf.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0deg)';
@@ -122,11 +124,6 @@ function toggleBookShelf(event) {
 
 // UNIVERSAL FLOATING MODAL SYSTEM
 window.bukaModalFrame = function(url, judul) {
-    // PDF files: open in new tab (better mobile support for multi-page)
-    if (url.toLowerCase().endsWith('.pdf')) {
-        window.open(url, '_blank');
-        return;
-    }
     const modal = document.getElementById('appModal');
     const frame = document.getElementById('appModalFrame');
     const title = document.getElementById('appModalTitle');
