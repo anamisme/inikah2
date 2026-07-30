@@ -38,5 +38,5 @@ header('Access-Control-Allow-Headers: Content-Type');
 header('Content-Type: application/json; charset=utf-8');
 
 function clean($str) {
-    return htmlspecialchars(trim($str), ENT_QUOTES, 'UTF-8');
+    return trim($str);
 }

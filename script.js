@@ -373,8 +373,7 @@ function prosesCariSertifikat() {
                     const safeNama = document.createElement('span');
                     safeNama.textContent = item.nama || '';
                     const safeLink = (item.link || '').replace(/[^a-zA-Z0-9\-._~:/?#\[\]@!$&'()*+,;=%]/g, '');
-                    const fullLink = safeLink.startsWith('http') ? safeLink : safeLink;
-                    const downloadLink = safeLink.startsWith('http') ? fullLink : 'api/download.php?file=' + encodeURIComponent(safeLink);
+                    const downloadLink = safeLink.startsWith('http') ? safeLink : 'api/download.php?file=' + encodeURIComponent(safeLink);
                     html += '<a href="' + downloadLink + '" target="_blank" rel="noopener noreferrer" class="ios-list-item"><div class="ios-list-left"><div class="ios-list-badge">E-CERT</div><div class="ios-list-title-box"><span class="ios-list-main-title" style="text-transform:uppercase;">' + safeNama.innerHTML + '</span><span style="font-size:0.75rem;color:var(--muted);">Sertifikat Siap Diunduh</span></div></div><span class="material-icons-outlined" style="color:var(--green-mid);">file_download</span></a>';
                 });
                 html += '</div>';
@@ -1023,9 +1022,9 @@ function loadNikahYear(year) {
 }
 
 function parseNikahCSV(csv) {
-    var lines = csv.split('\n');
+    var lines = parseCSVLines(csv);
     if (lines.length < 2) return [];
-    var headers = lines[0].split(',').map(function(h) { return h.replace(/"/g, '').trim().toLowerCase(); });
+    var headers = lines[0].map(function(h) { return h.replace(/"/g, '').trim().toLowerCase(); });
 
     var idxNo = -1, idxSuami = -1, idxIstri = -1, idxTempat = -1, idxTanggal = -1, idxRegister = -1;
     headers.forEach(function(h, i) {
@@ -1039,22 +1038,22 @@ function parseNikahCSV(csv) {
 
     var rows = [];
     for (var i = 1; i < lines.length; i++) {
-        var cols = lines[i].split(',');
+        var cols = lines[i];
         if (cols.length < 3) continue;
-        var suami = (idxSuami >= 0 && cols[idxSuami]) ? cols[idxSuami].replace(/"/g, '').trim() : '';
-        var istri = (idxIstri >= 0 && cols[idxIstri]) ? cols[idxIstri].replace(/"/g, '').trim() : '';
+        var suami = (idxSuami >= 0 && cols[idxSuami]) ? cols[idxSuami].trim() : '';
+        var istri = (idxIstri >= 0 && cols[idxIstri]) ? cols[idxIstri].trim() : '';
         if (!suami && !istri) continue;
 
-        var tanggal = (idxTanggal >= 0 && cols[idxTanggal]) ? cols[idxTanggal].replace(/"/g, '').trim() : '';
+        var tanggal = (idxTanggal >= 0 && cols[idxTanggal]) ? cols[idxTanggal].trim() : '';
         var tanggalParsed = parseNikahDate(tanggal);
 
         rows.push({
             suami: suami,
             istri: istri,
-            tempat: (idxTempat >= 0 && cols[idxTempat]) ? cols[idxTempat].replace(/"/g, '').trim() : '',
+            tempat: (idxTempat >= 0 && cols[idxTempat]) ? cols[idxTempat].trim() : '',
             tanggal: tanggal,
             tanggalParsed: tanggalParsed,
-            register: (idxRegister >= 0 && cols[idxRegister]) ? cols[idxRegister].replace(/"/g, '').trim() : ''
+            register: (idxRegister >= 0 && cols[idxRegister]) ? cols[idxRegister].trim() : ''
         });
     }
     rows.sort(function(a, b) { return b.tanggalParsed - a.tanggalParsed; });
