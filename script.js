@@ -161,6 +161,7 @@ window.tutupModalFrame = function() {
 
 // SERTIFIKAT FLOATING MODAL CONTROLLER
 window.bukaModalSertifikat = function() {
+    closeOverlay();
     const modal = document.getElementById('searchModal');
     if (modal) {
         modal.classList.add('show');
