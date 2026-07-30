@@ -81,9 +81,7 @@ body {
 .ios-navbar {
     position: fixed; top: 1rem; left: 1rem; right: 1rem; z-index: 999;
     padding: 12px 20px;
-    background: rgba(0, 102, 64, 0.85);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    background: rgba(0, 90, 55, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 18px;
     box-shadow: 0 4px 16px rgba(0, 102, 64, 0.3), inset 0 1px 1px rgba(255,255,255,0.2);
@@ -415,9 +413,7 @@ body.dark-mode .banner-dot.active {
 ════════════════════════════════ */
 .app-modal-overlay {
     position: fixed; inset: 0;
-    background: rgba(15, 23, 42, 0.35);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: rgba(15, 23, 42, 0.55);
     z-index: 2000;
     display: flex; align-items: center; justify-content: center;
     opacity: 0; pointer-events: none;
