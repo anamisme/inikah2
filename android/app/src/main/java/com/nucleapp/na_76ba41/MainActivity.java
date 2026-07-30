@@ -2,9 +2,12 @@ package com.nucleapp.na_76ba41;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
+import android.view.View;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
@@ -45,7 +48,11 @@ public class MainActivity extends AppCompatActivity {
 
         webView = findViewById(R.id.myWebView);
         webView.setBackgroundColor(0xFFF2F5F3);
-        webView.setLayerType(WebView.LAYER_TYPE_HARDWARE, null);
+        webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+
+        if (Build.VERSION.SDK_INT >= 26) {
+            webView.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
+        }
 
         WebSettings ws = webView.getSettings();
         ws.setJavaScriptEnabled(true);

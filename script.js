@@ -5,7 +5,11 @@ window.addEventListener('DOMContentLoaded', () => {
     // Jika dibuka dari APK (?app=1), langsung sembunyikan splash
     const isApp = new URLSearchParams(location.search).get('app') === '1';
     if (isApp) {
-        if (splash) splash.style.display = 'none';
+        if (splash) {
+            splash.style.opacity = '0';
+            splash.style.transition = 'none';
+            setTimeout(function() { splash.style.display = 'none'; }, 10);
+        }
     } else {
         setTimeout(() => { createSplashHearts(); }, 500);
         setTimeout(() => {
