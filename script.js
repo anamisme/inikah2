@@ -149,7 +149,13 @@ window.bukaModalFrame = function(url, judul) {
     const title = document.getElementById('appModalTitle');
     if (modal && frame && title) {
         title.innerText = judul;
-        frame.src = url;
+        var src = url;
+        if (url.toLowerCase().endsWith('.pdf')) {
+            var base = window.location.origin;
+            var fullUrl = url.indexOf('://') === -1 ? base + '/' + url.replace(/^\.?\//, '') : url;
+            src = 'https://docs.google.com/viewer?embedded=true&url=' + encodeURIComponent(fullUrl);
+        }
+        frame.src = src;
         modal.classList.add('show');
         document.body.style.overflow = 'hidden';
     }
