@@ -94,7 +94,13 @@ function toggleMainMenu(idSubmenu, idChevron) {
             if (href && !href.startsWith('#') && href !== '' && !link.hasAttribute('data-no-close')) {
                 e.preventDefault();
                 closeOverlay();
-                setTimeout(function() { window.location.href = href; }, 150);
+                setTimeout(function() {
+                    if (link.getAttribute('target') === '_blank') {
+                        window.open(href, '_blank');
+                    } else {
+                        window.location.href = href;
+                    }
+                }, 150);
             }
         }
     };
@@ -182,6 +188,7 @@ window.tutupModalSertifikat = function() {
 
 // BLANGKO FLOATING MODAL CONTROLLER
 window.bukaModalBlanko = function() {
+    closeOverlay();
     const modal = document.getElementById('blankoModal');
     if (modal) { modal.classList.add('show'); document.body.style.overflow = 'hidden'; }
 }
@@ -193,6 +200,7 @@ window.tutupModalBlanko = function() {
 
 // JADWAL MODAL CONTROLLER
 window.bukaModalJadwal = function() {
+    closeOverlay();
     const modal = document.getElementById('jadwalModal');
     if (modal) { modal.classList.add('show'); document.body.style.overflow = 'hidden'; loadJadwalModal(); }
 }
@@ -263,6 +271,7 @@ function buildJadwalItems(data) {
 
 // PETUGAS MODAL CONTROLLER
 window.bukaModalPetugas = function() {
+    closeOverlay();
     const modal = document.getElementById('petugasModal');
     if (modal) { modal.classList.add('show'); document.body.style.overflow = 'hidden'; loadPetugasModal(); }
 }
@@ -580,6 +589,7 @@ setTimeout(loadBanners, 1500);
 
 // ===== PONDASI SAKINAH =====
 window.bukaModalPondasi = function() {
+    closeOverlay();
     try {
         var modal = document.getElementById('pondasiModal');
         if (!modal) { console.error('pondasiModal not found'); return; }
@@ -697,6 +707,7 @@ const WAKAF_KELURAHAN_TABS = [
 let _wakafCurrentTab = 'Kedungkebo';
 
 window.bukaModalKeagamaanTarget = function(modalId, tipe, contentId, tabsId) {
+    closeOverlay();
     var modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.add('show');
