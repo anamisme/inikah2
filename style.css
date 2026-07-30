@@ -479,9 +479,8 @@ body.dark-mode .banner-dot.active {
 .app-modal-title {
     font-family: "Playfair Display", serif;
     font-size: 1.15rem; font-weight: 700; color: var(--text);
-    padding: 20px 64px 16px 24px; margin: 0;
+    padding: 20px 64px 20px 24px; margin: 0;
     border-bottom: 1px solid var(--border);
-    text-overflow: ellipsis; overflow: hidden; white-space: nowrap;
 }
 .app-modal-body { flex: 1; position: relative; background: #f8fafc; }
 .app-modal-body iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
